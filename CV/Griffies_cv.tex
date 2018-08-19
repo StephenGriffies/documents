@@ -1,0 +1,618 @@
+\documentclass{article}
+\usepackage{geometry}\geometry{top=2cm,left=2.cm,right=2.0cm,bottom=2cm,centering,dvips}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{shadow}
+\usepackage{kpfonts}
+\usepackage{enumitem}
+\usepackage{lastpage}
+\usepackage{bm}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=OliveGreen,citecolor=blue,filecolor=blue,urlcolor=blue} 
+
+\usepackage[british]{babel}
+\usepackage[yyyymmdd]{datetime}
+
+\usepackage{etaremune}
+
+% Header box
+\def\name#1{\def\@name{#1}}
+\def\info#1{\def\@info{#1}}
+\newcommand{\shadebox}[3][.9]{\fcolorbox[gray]{0}{#1}{\parbox{#2}{#3}}}
+\def\maketitle{
+\thispagestyle{plain}
+\vspace*{-1.4cm}
+\shadebox[0.9]{17.3cm}{\sf\color[rgb]{.6,0,0}
+}
+\vspace*{0.2cm}
+}
+
+\usepackage[Lenny]{fncychap}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+
+\chead{\sc \color{Maroon} \protect\iconB{waves.pdf} Stephen M. Griffies \protect\iconB{waves.pdf} }
+
+\cfoot{\sc  \color{Maroon}  Curriculum Vitae}
+\lfoot{  \color{Maroon} \today}
+\rfoot{\color{Maroon} \sc page  \thepage\ of \pageref{LastPage}}
+\renewcommand{\footrulewidth}{1pt}
+
+% icons for images 
+
+\newcommand{\icon}[1]
+{\includegraphics[height=.015\textheight]{#1}}
+
+\newcommand{\iconB}[1]
+{\includegraphics[height=.012\textheight,width=0.075\textwidth]{#1}}
+
+
+\newcommand{\largeicon}[1]
+{\includegraphics[height=.015\textheight,width=0.5\textwidth]{#1}}
+
+\fancyhead[LE,LO]{\textsc{\textbf{\nouppercase{\leftmark}}}}
+
+\begin{document}
+\thispagestyle{empty}
+
+\shadebox[0.9]{15cm}{\sf\color[rgb]{.6,0,0}
+\begin{center}
+
+\sc 
+
+\begin{center}
+\resizebox{3cm}{!}{\includegraphics{Griffies_Coronation_Island_2017_crop.jpg}}
+\end{center}
+
+\textsc{\large \color{Maroon} \protect\icon{spiral.pdf} Stephen Matthew Grif\/f\/ies}
+\protect\icon{ripple_spiral.pdf} 
+\\[1ex]
+
+NOAA Geophysical Fluid Dynamics Laboratory 
+%$\bullet$ Princeton USA
+\\
+Princeton University Program in Atmospheric and Oceanic Sciences 
+\\
+{\tt Stephen.Griffies at noaa.gov} $\bullet$ {\tt  Stephen.M.Griffies at gmail.com} 
+\\  
+\href{www.gfdl.noaa.gov/stephen-griffies-homepage}{research homepage} 
+$\bullet$ 
+\href{https://scholar.google.com/citations?user=4LPPPBAAAAAJ&hl=en}{google scholar page}
+%\\
+%Princeton USA
+
+%\vspace{.2cm}
+\end{center}
+}
+
+\section*{\sc \color{Maroon}  research statement}
+\vspace{-.3cm}
+My research is concerned with elements of ocean fluid mechanics and the role of the ocean in the earth climate system. I make use of theoretical tools, idealized process models, realistic numerical circulation models, and field measurements.
+I have active collaborations with numerous scientists from around the world, most notably in America, Australia, and Europe. 
+Particular research topics in recent years include studies of  Atlantic and Southern Ocean dynamics; global and regional sea level variability and change;  transport of matter and energy by transient mesoscale and submesoscale eddies; subgrid scale parameterizations of turbulent ocean stirring and mixing; analysis methods aimed at revealing aspects of the ocean as a turbulent fluid; algorithms for ocean circulation models. 
+
+\section*{\sc \color{Maroon} educational statement}
+\vspace{-.3cm}
+As a lecturer, mentor, author, and editor, I aim to foster a fundamental understanding of physical concepts and their creative use in describing observed and simulated ocean phenomena. Towards this aim, I strive to pedagogically articulate the foundations of ocean fluid mechanics in articles, books, course notes, and lectures.  I am particularly interested in revealing how concepts and tools from mathematical physics can be leveraged to deepen our understanding of the ocean, and for nurturing an appreciation of geophysical fluid mechanics within the broader context of theoretical physics. 
+
+\section*{\sc  \color{Maroon}  interests and activities}
+\vspace{-.25cm}
+
+physics, oceanography, climate, writing, education, philosophy, sustainability, cultures, meditation, yoga, surfing, skiing, hiking
+
+
+\section*{\sc \color{Maroon}   employment and appointments} 
+\vspace{-.25cm}
+\begin{tabular}{ll}
+
+%2017--present & Partner Investigator, Australian Research Council Centre of Excellence for                              Climate Extremes \\ 
+
+2015--present & Lecturer, Atmospheric and Oceanic Sciences Program, Princeton University
+  \\
+  2013--2017  & NOAA/GFDL Model Development Team Steering Committee  \\
+  Jun-Aug 2012  & Visiting Scientist, National Center for Atmospheric
+                  Research, Boulder, USA \\
+%  2011--2017 & Partner Investigator, Australian Research Council Centre of Excellence for                           Climate System Science \\                            
+  Jan-Jun 2011   & CSIRO Distinguished Visiting Scientist Fellow, Hobart, Australia \\
+  2011-present & NOAA/GFDL Senior Scientist (equivalent to university full professor) \\ 
+  Mar 2009         & Visiting Professor, Universite catholique de Louvain, Belgium \\
+  Jan-Nov 2005   & Visiting Scientist, CSIRO Marine and Atmospheric  Research, Hobart, Australia \\
+  2001--2005     & NOAA/GFDL Oceans and Climate Group Leader \\
+  2000--2011     & NOAA/GFDL Ocean Model and Climate Model Development Team (co-lead) \\
+  1996-present   &  NOAA/GFDL Staff Physical Scientist \\  
+  1995--1996     &  NOAA/GFDL and Princeton University Visiting Research Scientist  \\ 
+  1993--1995     & UCAR Climate \& Global Change Fellow at Princeton University \\
+  1988--1993     &  University of Pennsylvania Physics Graduate Research Fellow  \\                     
+  1986--1987     &  Northwestern University Engineering Sciences and Applied Mathematics Fellow \\
+  1984--1986     &  Louisiana State University Chemical Engineering Research Laboratory Technician                     
+\end{tabular}
+
+
+\section*{\sc \color{Maroon} education}
+\vspace{-.25cm}
+\begin{tabular}{lll}
+1993-1996  &  Post-doctoral fellow in geosciences  & Princeton University \\
+1988-1993  &  Ph.D in theoretical physics  & University of Pennsylvania \\
+1987-1988  &  Physics undergraduate studies & University of Washington\\
+1986-1987  &  Masters in engineering sciences \& applied mathematics   & Northwestern University\\
+1981-1986  &  Bachelor of science in chemical engineering  & Louisiana State University 
+\end{tabular}
+
+
+\section*{\sc \color{Maroon}  oceanographic field work}
+\vspace{-.25cm}
+
+%\begin{tabular}{l}
+\begin{itemize}[leftmargin=*]
+ \item 
+ Mar-May 2017: Eight week cruise on the {\it RRS JC Ross}  to the Orkney Passage and Scotia Sea,
+  as part of the
+  Dynamics of the Orkney Passage Outflow (DynOPO) project. Principal Scientific Officer: A.\ Naveira Garabato. 
+ \item 
+  Jul 1993: Two week cruise on the {\it CCGS Hudson} to the Labrador Sea in support of  the WOCE Line AR7W Atlantic Circulation Experiment. Chief Scientist: J.\ Lazier.
+\end{itemize}
+%%\end{tabular}
+
+
+\section*{\sc  \color{Maroon}   awards and honors}
+\vspace{-.25cm}
+
+\begin{tabular}{ll}
+  2017 & \href{https://eos.org/agu-news/celebrating-the-2017-class-of-fellows}{Elected Fellow of the American Geophysical Union} "For exceptional and sustained contributions to the \\ &  understanding of large-scale ocean circulation and physics and seminal advances in ocean modeling"
+\\
+  2017 & NOAA Administrator's Award (with Robert Hallberg) "For scientific leadership for the innovation \\ & of the versatile  community-based Modular Ocean Model MOM6" \\ 
+  2014 & \href{http://www.egu.eu/awards-medals/fridtjof-nansen/2014/stephen-m-griffies/}{European Geosciences Union Fridtjof Nansen Medal for
+         oceanographic research}  "For 
+outstanding \\ & contribution and leadership in 
+ocean general circulation model development 
+and critical insights in the \\ & physical 
+nature and parameterization of ocean processes"
+\\
+  2013 & Department of Commerce Silver Medal Award (with nine other
+  GFDL staff scientists): 
+  "For development \\ & and application of NOAA's first comprehensive  
+  Earth System Model  
+  that couples the carbon cycle and \\ & climate for projection of changes" \\
+  2012 & NOAA Administrator's Award "For scientific vision, leadership
+  and development of 
+  the Modular Ocean \\ & Model (MOM4) for climate modeling, research and
+  predictions" \\
+  2011 & CSIRO Distinguished Visiting Scientist Fellow, Australia \\
+  2009 & Visiting Professor, Universite catholique de Louvain, Belgium\\
+  2001 & NOAA/Oceanic and Atmospheric Research Outstanding Scientific
+  Review Paper\\
+  1999 & NOAA/Oceanic and Atmospheric Research Outstanding Scientific Paper\\
+  1998 & NOAA/Oceanic and Atmospheric Research Employee of the Year\\
+  1997 & NOAA/Environmental Research Laboratories Outstanding Scientific Paper\\
+\end{tabular}
+
+\section*{\sc  \color{Maroon}  professional services and memberships}
+\vspace{-.25cm}
+
+\begin{tabular}{ll}
+2018-present & Editor of the  \href{http://agupubs.onlinelibrary.wiley.com/hub/journal/10.1002/(ISSN)1942-2466/editorial-board/editorial-board.html}{Journal of Advances in Modeling the Earth System (JAMES)}  \\
+2014-present &  Member  \href{http://www.clivar.org/organization/ssg}{WCRP/CLIVAR Scientific Steering Group} \\
+2014-2016     & NCEP Climate Model Development Task Force (co-lead) \\
+2013-present & \href{http://www.clivar.org/clivar-panels/omdp}{WCRP/CLIVAR Ocean Model Development Panel (ex-officio)} \\
+2012-2014     & CLIVAR/CliC/SCAR Southern Ocean Region Implementation Panel \\
+2012-present & Emeritus member of \href{http://www.clivar.org/clivar-panels/omdp}{WCRP/CLIVAR Ocean Model Development Panel} \\
+2010-present & Member European Geosciences Union \\
+2009-2015     &  Scientific Advisory Board for the Catalan  Climate Institute {\it IC3}, Barcelona, Spain \\
+2007-2018 & Editor of the journal \href{https://www.journals.elsevier.com/ocean-modelling/editorial-board}{Ocean Modelling}  \\
+2006-2009     &  WCRP/CLIVAR Scientific Steering Group \\
+2004-2009     &  WRP/CLIVAR Working Group on Coupled Modelling (ex officio) \\
+2004-2007     & Editorial Board of the journal {\bf Ocean Science} \\
+1999-2012     & WCRP/CLIVAR Working Group on Ocean Model Development  (co-chair 2004-2009) \\
+1993-present  & Member American Geophysical Union \\
+1993-present  & Member American Meteorological Society \\
+\end{tabular}
+
+
+\section*{\sc  \color{Maroon} mentoring and sabbatical hosting}
+\vspace{-.25cm}
+
+\begin{tabular}{lll}
+2018-present & Graeme MacGilchrist & Princeton University post-doc researcher (with Jorge Sarmiento) \\ 
+2017-present & Houssam Yassin & Princeton University graduate student \\ 
+2017-2018 & Laure Zanna  & Princeton University visiting scholar (from Oxford University)  \\
+2017 & Jianjun Yin       & Princeton University visiting scholar (from University of Arizona)  \\
+2016-present & Brandon Reichl       & Princeton University post-doc researcher  \\
+2016-2018 & Nathaniel Tarshish & Princeton University pre-doc researcher (with Jorge Sarmiento) \\
+2015-2017 & Amanda O'Rourke  & University of Michigan post-doc researcher (with Brian Arbic) \\
+2015-2016    & Henri Drake             & Princeton University pre-doc researcher (with Jorge Sarmiento) \\
+2014-2017 & Alison Gray            & Princeton University post-doc researcher (with Jorge Sarmiento) \\
+2014-2017 & Anna FitzMaurice   & Princeton University PhD student (with Sonya Legg and Robert Hallberg) \\ 
+2014-2015     & Ivy Frenger            & Princeton University post-doc researcher (with Jorge Sarmiento) \\
+2013-2017 & Robert Nazarian    & Princeton University PhD student (with Sonya Legg and Robert Hallberg) \\ 
+2013-2016     & Adele Morrison     & Princeton University post-doc researcher (with Jorge Sarmiento) \\
+2013               & Terrence O'Kane   & Visiting senior scientist from CSIRO Marine Laboratory, Hobart, Australia \\
+2012-2017     & Carolina Dufour   & Princeton University post-doc researcher (with Jorge Sarmiento)  \\
+2012-2013     & Yalin Fan              & Princeton University post-doc researcher \\
+2011-2014     & Michael Bueti       & University of Rhode Island  PhD student (with Isaac Ginis) \\
+2008-2011     & Michael Bates       & University of New South Wales PhD student (with Matthew England) \\
+2005-2009     & Andreas Klocker   & University of Tasmania  PhD student (with Trevor McDougall) \\
+2001-2002     & Harper Simmons   & GFDL post-doc researcher \\
+1999-2002     & Shafer Smith         & Princeton University and GFDL post-doc researcher     \\
+\end{tabular}
+
+\section*{\sc  \color{Maroon}  University teaching}
+\vspace{-.3cm}
+
+\begin{itemize}[leftmargin=*]
+
+\item Autumn semester 2018: Princeton University Atmospheric and Oceanic Sciences 571: Geophysical Fluid Dynamics (24 lectures covering the full course)
+    
+\item Spring semester 2018: Princeton University Atmospheric and Oceanic Sciences 580: Special Topics on Great Papers in Atmospheric and Oceanic Sciences (led one discussion session)
+
+\item Autumn semester 2017: Princeton University Atmospheric and Oceanic Sciences 571: Geophysical Fluid Dynamics (24 lectures covering the full course)
+  
+\item Spring semester 2017: Princeton University Atmospheric and Oceanic Sciences 580: Special Topics on Great Papers in Atmospheric and Oceanic Sciences (led one discussion session)
+
+\item Autumn semester 2016: Princeton University Atmospheric and Oceanic Sciences 571: Geophysical Fluid Dynamics (12 lectures covering the second half of the course)
+
+\item Spring semester 2016: Princeton University Geosciences 503:
+  Responsible Conduct of Research in Geosciences (co-taught one
+  three-hour discussion session)
+
+\item Autumn semester 2015: Princeton University Atmospheric and Oceanic Sciences 571: Geophysical
+  Fluid Dynamics (12 lectures covering  the second half of the course)
+
+\item Autumn semester 2014: Princeton University Atmospheric and Oceanic Sciences 571: Geophysical
+  Fluid Dynamics (12 lectures covering  the first half of the course)
+
+\item Autumn semester 1993: Princeton University Atmospheric and Oceanic Sciences 580: Data
+  Assimilation in Atmospheric and Oceanic Models (co-lecturer and
+  coordinator of visiting lectures)
+
+\item 1990--1993:  Instructor, Undergraduate Physics Laboratory,
+  University of Pennsylvania 
+
+\item 1990--1993:  Teaching Assistant,  General Relativity and
+  Quantum Field Theory, University of Pennsylvania 
+
+\end{itemize}
+
+
+\section*{\sc \color{Maroon}  participant/collaborator on research grants and projects}
+\vspace{-.3cm}
+
+\begin{itemize}[leftmargin=*]
+
+\item Co-PI for NOAA Modeling, Analysis, Predictions, and Projections Program (01Aug2018--31Jul2020): Addressing Key Issues in CMIP6-era Earth System Models. \$434,000.
+    
+\item Program advisory board for the UK NERC funded project: Transient tracer-based Investigation of Circulation and Thermal Ocean Change (TICTOC) (2017-2020)
+
+\item Partner Investigator for the Australian Research Council (2017-2023) Centre of Excellence for Climate Extremes, AU\$30,050,000.
+  
+\item Co-PI for the Ocean Model Intercomparison Project (OMIP), which is part of the Coupled Model Intercomparison Project (CMIP6) (2016-present).    
+\item Co-PI for the Flux Anomaly Forcing Model Intercomparison Project (FAFMIP), which is part of the Coupled Model Intercomparison Project (CMIP6) (2016-present).    
+
+\item Co-PI for NOAA Modeling, Analysis, Predictions, and Projections Program (01Jul2016--30Jun2018): Development toward NCEP's fully-coupled
+  global forecast and data assimilation system: A coupled wave-ocean
+  system.  \$316,000.
+
+\item Partner Investigator for the for the Australian Research Council (2016-2020) funded project: An Australian Consortium for Eddy-Resolving Ocean-Sea Ice Modelling, AU\$599,223.
+
+\item US Department of Energy (15Aug2014--14Aug2017):
+  Three-dimensional structure of the Southern Ocean overturning
+  circulation.  \$624,213.
+
+\item US National Science Foundation (01Sep2014--31Aug2020): Southern
+  Ocean Carbon and Climate Observations and Modeling
+  (SOCCOM). \$20,983,626.
+
+\item NASA (26Jun2014--25 Jun2017): The role of mesoscale eddies in
+  cross-frontal transport and subduction of nutrients and carbon in
+  the Southern Ocean.  \$715,123.
+
+\item NOAA (01Sept2013--31Aug2016): Signature of the Atlantic
+  meridional overturning circulation in the North Atlantic dynamic sea
+  level.  \$393,172.
+
+\item US Department of Energy (15Sep2011--14Sep2015): Mode and
+  intermediate waters in Earth System Models. \$519,741.
+
+\item Partner Investigator for the Australian Research Council (2011-2018) Centre of Excellence for Climate System Science, AU\$21,400,000.
+  
+\item NOAA Climate Program Office and US National Science Foundation
+  (2010--2015): Climate Processes Team on representing internal-wave
+  driven mixing in global ocean models.
+
+\item NOAA Climate Program Office and US National Science Foundation
+  (2003--2008): Climate Processes Team on ocean eddy mixed layer
+  interactions.
+
+\item NOAA Climate Program Office and US National Science Foundation
+  (2003--2008): Climate Processes Team on gravity current entrainment.
+
+
+
+\end{itemize}
+
+
+\section*{\sc  \color{Maroon}  invited pedagogical lectures and courses}
+\vspace{-.3cm}
+
+\begin{itemize}[leftmargin=*]
+
+\item Jul 2016: {\sc Ocean Modelling and sea level analysis}: three
+  lectures (two hours each) at the International Centre for
+  Theoretical Physics / Indian Institute for Tropical Meteorology:
+  {\sc Advanced School on Earth System Modelling}, Pune, India
+
+\item Aug 2013: {\sc Ocean models and ocean modeling: lectures on the
+    fundamentals and practices}: Five lectures (two hours each) at the
+  International Centre for Theoretical Physics School: {\sc
+    Fundamentals of Ocean Climate Modeling at Global and Regional
+    Scales}, Hyderabad, India
+
+\item Mar 2009: {\sc Physical Processes Setting the Ocean's Water
+    Masses}: four lectures (two hours each) at the Universit\'e
+  Catholique de Louvain, Belgium
+
+\item Nov 2007: {\sc Ocean Model Fundamentals}:  10 lectures (two hours each)  
+at the University of Tasmania, Australia
+
+\item Aug 2006: {\sc Ocean Model Fundamentals}: two lectures (one hour
+  each) at the NSF summer school, {\sc Modern Mathematical Methods in
+    Physical Oceanography}, Breckenridge, USA
+
+\item Oct 2004: {\sc Ocean Model Fundamentals}: 10 lectures (two hours
+  each) at the {\sc Indian Intensive School on Large-Scale Ocean Modelling},
+  Bangalore, India
+
+\item Sep 2004: {\sc Ocean Model Fundamentals}: three lectures (two
+  hours each) at the {\sc Global Ocean Data Assimilation Experiment
+    Summer School}, La Londe Les Maures, France
+
+\item May 2003: {\sc Ocean Climate Modeling at NOAA-GFDL}: two
+  lectures (one hour each) for a workshop on ocean modeling, Hobart,
+  Australia
+
+\item May 2002: {\sc Ocean Climate Modeling with MOM4}: three lectures
+  (one hour each) for a workshop on ocean modeling, Kiel, Germany
+
+\item Jan 2001: {\sc Ocean Dynamics and Modeling}: three lectures (two
+  hours each) at La Escuela de Verano de Universidad de Concepci\'on,
+  Chile
+
+\item Mar 1999: {\sc Ocean and Climate Modeling}: two lectures (90
+  minutes each) at {\sc Conference on Global Climate}, Barcelona,
+  Spain
+
+\end{itemize}
+
+
+
+\section*{\sc  \color{Maroon} pedagogical media outreach}
+\vspace{-.3cm}
+
+\begin{itemize}[leftmargin=*]
+
+\item 2016: \href{https://www.youtube.com/watch?v=gaFjlZxM7S4&feature=youtu.be}{Animation of  the ocean's role in El Ni\~{n}o} 
+
+\item 2015:  \href{https://www.youtube.com/watch?v=8VMSF28J9H4&list=PL9poquLHLLO91iC_6pujn6bsMCvMyJ3xU}{Animation  of  Southern Ocean circulation} 
+
+\item 2011:  \href{https://vimeo.com/27076776}{Animation  of  ocean surface temperatures from an eddying climate model} 
+
+\end{itemize}
+
+
+
+\section*{\sc \color{Maroon} invited research presentations since 2008}
+\vspace{-.3cm}
+
+\begin{itemize}[leftmargin=*]
+
+\item May 2018: {\sc Understanding and projecting global, regional, and coastal sea level: Reasons to include coastal ocean processes in global models}: Consortium for Ocean-Sea Ice Modelling in Australia (COSIMA) Annual Meeting, Australian National University, Canberra, Australia \& University of New South Wales, Sydney, Australia. 
+
+\item Mar 2018: {\sc Understanding and projecting global, regional, and coastal sea level: Reasons to include coastal ocean processes in global models}: ISSI workshop on understanding the relationship between coastal sea level and large-scale ocean circulation, Bern, Switzerland. 
+
+\item Feb 2018: {\sc Subsurface Warming of Antarctic Coastal Waters: a Role for Both Winds and Freshening}: {\sc American Geophysical Union Ocean Sciences Conference}, Portland, Oregon, USA.
+
+\item Dec 2017: {\sc Localized Rapid Warming of West Antarctic Subsurface Waters by Remote Winds}: American Geophysical Union Fall Meeting, New Orleans, Louisiana, USA. 
+
+\item Nov 2017: {\sc Physical mechanisms of sea level variations in a changing climate}: International CLIVAR Scientific Steering Group meeting, Indian Institute of Tropical Meteorology, Pune, India.
+
+
+\item Jul 2017: {\sc Localized rapid warming of West Antarctic
+    subsurface waters by remote winds}: WCRP Conference on Regional
+  Sea-level Changes and Coastal Impacts, Columbia University, New York City, USA. 
+
+\item May 2017: {\sc Localized rapid warming of West Antarctic
+    subsurface waters by remote winds}: {\it RRS JC Ross} research cruise
+  JR16005 to Orkney Passage, Southern Ocean.
+
+\item Jan 2017: {\sc The ocean mesoscale: observations, theory, and
+    modeling}: Banff International Research Station (BIRS) workshop:
+  {\it Transport in unsteady flows: From deterministic structures to
+    stochastic models and back again}, Banff, Canada.
+
+\item July 2016: {\sc Elements of sea level in a changing climate}:
+  Indian Institute of Tropical Meteorology, Pune, India.
+
+\item July 2016: {\sc Ocean modelling: an introduction for
+    mathematical physicists}: Department of Mathematics, Savitribai
+  Phule Pune University, Pune, India.
+
+\item May 2016: {\sc Elements of sea level in a changing climate}:
+  University of New South Wales, Sydney, Australia \& Australian
+  National University, Canberra, Australia.
+
+\item Jan 2016: {\sc Elements of sea level in a changing climate}:
+  Louisiana State University Chemical Engineering Department, Baton
+  Rouge, Louisiana, USA.
+
+\item Oct 2015: {\sc Impacts on ocean heat from the mesoscale}:
+  Lamont-Doherty Earth Observatory / Columbia University, USA.
+
+\item Oct 2015: {\sc Impacts on ocean heat from the mesoscale}: Stony
+  Brook Marine Sciences, Stony Brook, USA.
+
+\item Oct 2014: {\sc Impacts on ocean heat from the mesoscale}:
+  Meeting on ocean heat uptake at National Oceanography Centre,
+  Southampton, UK.
+
+\item Jun 2014: {\sc Impacts on ocean heat from the mesoscale}:
+  University of Stockholm, Sweden.
+
+\item Apr 2014: {\sc Problems and prospects with ocean mesoscale
+    eddying climate models}: Nansen Medal lecture at the European
+  Geosciences Union annual meeting, Vienna, Austria.
+
+\item Apr 2014: {\sc Problems and prospects with ocean mesoscale
+    eddying climate models}: lecture given at a CLIVAR workshop on
+  eddying ocean climate models, Kiel, Germany.
+
+\item Sep 2013: {\sc Problems and prospects of model comparisons: an
+    ocean process perspective}: lecture given at a symposium
+  celebrating the 80th birthday of Gerold Siedler, Kiel, Germany.
+
+\item Feb 2013: {\sc Sea level in a suite of forced global ocean-ice
+    simulations}: CLIVAR workshop on Sea-Level Rise, Ocean/Ice-Shelf
+  Interactions, and Ice Sheets, Hobart, Australia
+
+\item Jan 2013: {\sc Ocean model numerics and physics: challenges for
+    mesoscale eddying global climate simulations}: 10th annual meeting
+  of the Drakkar Ocean Modelling Consortia, Grenoble, France
+
+\item Sep 2012: {\sc Sea level in ocean climate models: fundamentals
+    and practices}: University of Tasmania, Hobart, Australia
+
+\item Sep 2012: {\sc Ocean modelling with MOM and its relation to
+    Australian ocean climate science}: Second meeting of Consortia for
+  Ocean Modelling in Australia, Hobart, Australia
+
+\item Feb 2012: {\sc Ocean modelling with MOM and its relation to
+    Australian ocean climate science}: First meeting of Consortia for
+  Ocean Modelling in Australia, Hobart, Australia
+
+\item Mar 2011: {\sc Dynamic sea level, static sea level, and the
+    non-Boussinesq steric effect}: Australia National University,
+  Canberra, Australia
+
+\item Nov 2010:  {\sc Ocean Climate Modeling at GFDL}: Scientific
+  Workshop for the Centre for Australian Weather and Climate Research,
+  Hobart, Australia
+
+\item Sep 2010:  {\sc Sensitivity of Atlantic ocean variability to
+    ocean physics and vertical coordinate}: CLIVAR WGOMD/GSOP Workshop
+  on Decadal Variability, Predictability, and Predictions:
+  Understanding the Role of the Ocean. Boulder USA 
+
+\item Apr 2008:  {\sc Physical Problems in Simulating the Ocean
+    Climate System}: presentation given during a workshop on Oceans
+  and Climate at Yale University 
+
+\item Mar 2008:  {\sc Physical Problems in Simulating the Ocean
+    Climate System}: presentation given during a special session on
+  Climate Physics at the American Physical Society's March Meeting of
+  Condensed Matter Physics 
+
+
+\end{itemize}
+
+
+\section*{\sc  \color{Maroon}  convener/organizer of workshops \& meetings}
+\vspace{-.3cm}
+
+
+\begin{itemize}[leftmargin=*]
+
+\item Mar 2019: scientific advisory committee for the WCRP workshop: Sources and sinks of ocean mesoscale eddy energy, Florida, USA. 
+
+\item Feb 2018: co-convener for the Town Hall: Process understanding and standardized assessment towards the eddying realm. {\sc American Geophysical Union Ocean Sciences Conference}, Portland, Oregon, USA.
+
+\item Feb 2018: co-convener for the session: Modeling the Climate System at High Resolution, {\sc American Geophysical Union Ocean Sciences Conference}, Portland, Oregon, USA.
+
+\item Sep 2016: Science Organizing Committee and Executive Planning
+  Team for {\sc CLIVAR Open Science Conference}, Qingdao, China.
+
+\item Apr 2014: {\sc Physical and biogeochemical ocean modelling: development, assessment, and applications}, Session at the European Geosciences Union General Assembly, Vienna, Austria.
+
+\item Feb 2014: {\sc Physical and biogeochemical ocean modeling:
+    development, assessment and applications}, Session at the Ocean
+  Sciences meeting, Honolulu, Hawaii.
+
+\item Apr 2013: {\sc Physical and biogeochemical ocean modelling:
+  development, assessment, and applications}, Session at the European
+Geosciences Union General Assembly, Vienna, Austria.
+
+\item Feb 2013: {\sc CLIVAR WGOMD/SOP Workshop on Sea-Level Rise,
+  Ocean/Ice-Shelf Interactions, and Ice Sheets}, Hobart, Australia.  
+
+\item Apr 2012: {\sc Physical and biogeochemical ocean modelling:
+  development, assessment, and applications}, Session at the European
+Geosciences Union General Assembly, Vienna, Austria.
+
+\item Oct 2011: {\sc Ocean Circulation and Ventilation}, Session at
+the WCRP Open Science Conference, Denver, USA. 
+
+\item Apr 2011: {\sc Physical and biogeochemical ocean modelling:
+  development, assessment, and applications}, Session at the European
+Geosciences Union General Assembly, Vienna, Austria.
+
+\item Oct 2009: {\sc Workshop on Ocean Climate Modeling},
+  GFDL/Princeton, USA.
+
+ \item Apr 2009: {\sc CLIVAR Workshop on Ocean Mesoscale Eddies:
+    Observations, Simulations, and Parameterizations}, Exeter, UK.
+
+\item Aug 2007: {\sc CLIVAR Workshop on Numerical Methods in Ocean
+  Modelling}, Bergen, Norway.
+
+\item Nov 2005: {\sc CLIVAR Workshop on Modelling the Southern
+  Ocean}, Hobart, Australia.
+
+\item Jun 2004: {\sc CLIVAR Workshop on Evaluating the Ocean
+  Component of IPCC Models}, Princeton, USA.
+
+\item Aug 2002: {\sc Workshop on Z-coordinate Ocean Modeling},
+Massachusetts Institute of Technology, USA.
+
+\item Nov 1999: {\sc Meeting of Z-coordinate Ocean Modeling at GFDL,
+  LANL, MIT, and NCAR}, Princeton, USA.
+
+\item Jul 1999: {\sc Ocean/Atmosphere Variability and
+  Predictability}, Session at the International Union of Geodesy and
+Geophysics, Birmingham, UK.
+
+\end{itemize}
+
+
+\section*{\sc \color{Maroon}  student participant in competitive special topic schools}
+\vspace{-.3cm}
+
+\begin{itemize}[leftmargin=*]
+
+\item Jan 1998: NATO Advanced Study Institute: {\sc Ocean Modeling
+    and Parameterization}, Les Houches, France.
+
+\item Jan 1996: NATO Advanced Study Institute: {\sc Climate
+  Variability and Predictability}, Les Houches, France.
+
+\item Jul 1994: Meeting of UCAR Global and Climate Change Fellows.
+Steamboat Springs, USA.  
+
+\item Jul 1992: Theoretical Advanced Study Institute: {\sc From
+  String Theory to Black Holes}, Boulder, USA.
+
+\item Jul 1991: High Energy Physics and Cosmology School, Center for
+Theoretical Physics, Trieste, Italy.
+
+\item Jun 1991: Theoretical Physics Summer School: {\sc Particle
+  Physics in the 1990's}, Les Houches, France.
+
+\end{itemize}
+
+
+%\input{cv_smg_pubs_6}
+\input{cv_smg_pubs}
+
+
+
+\end{document}
