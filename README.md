@@ -1,2 +1,2 @@
 # documents
-Griffies documents and papers
+Griffies documents and papers. 
