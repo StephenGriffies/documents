@@ -1,0 +1,761 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{color}
+\usepackage{array}
+\usepackage{enumitem}
+
+
+%
+% Choose how your presentation looks.
+%
+% For more themes, color themes and font themes, see:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+%
+\mode<presentation>
+{
+  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+  \setbeamertemplate{footline}[frame number]
+} 
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+
+
+\title{A historical survey of neutral diffusion methods and comments on current research}
+\author{Stephen.Griffies@noaa.gov \\ 
+SMG@princeton.edu \\ 
+Stephen.M.Griffies@gmail.com}
+\institute{NOAA/GFDL + Princeton University}
+\date{14 Jan 2019 \\ \vspace{.35cm}
+Talk given at NCAR (via the internet from Princeton) in honour of Peter Gent's mighty contributions to the science of oceanography and climate, and to the huge community of scientists who call him a friend, mentor, and inspiration.  \\ \vspace{.25cm}
+Deep thanks Peter.  You are a true Gent!  
+}
+
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+
+\begin{frame}{Caveats and apologies}
+
+\begin{itemize}
+
+\item[$\star$] History is longer than a 25+5 minute talk. So my apologies for stories left untold here.  
+
+\item[$\star$]  Some exposure to these topics is assumed of the audience. Time is too short to be fully pedagogical. 
+
+\item[$\star$]  Sincere apologies for not being able to attend in person due to lapse in funding of the US government.  My electronic presence at this meeting is provided voluntarily and without any funds exchanged.  
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Our focus: advection-diffusion equation}
+
+\begin{itemize}
+
+\item[$\star$] Boussinesq advection-diffusion equation for tracer concentration, $C$
+\begin{equation}
+    \frac{\partial C}{\partial t} + \nabla \cdot ( {\bm v} \, C)
+    = -\nabla \cdot {\bm F}.
+\end{equation}
+
+\item[$\star$]  We write the subgrid scale (SGS) flux ${\bm F}$ in terms of a second order transport tensor, $\mathbb{J}$, acting on the tracer gradient 
+\begin{equation}
+  {\bm F}  = -\mathbb{J} \cdot \nabla C.
+\end{equation}
+
+\item[$\star$] SGS transport tensor has a symmetric component (diffusion) plus anti-symmetric component (advection or skew-diffusion)
+\begin{equation}
+    \mathbb{J} =  (1/2)(\mathbb{J} + \mathbb{J}^{T})
+     + (1/2)(\mathbb{J} - \mathbb{J}^{T})
+     \equiv \mathbb{K} + \mathbb{A}.
+\end{equation}
+
+\item[$\star$] We here focus on $\mathbb{K}$ arising from mesoscale eddy stirring leading to downscale cascade towards mixing along neutral directions; i.e., {\it neutral diffusion}. 
+
+\item[$\star$]  We comment later on the connection to $\mathbb{A}$.
+ 
+\end{itemize}
+
+\end{frame}
+
+
+
+% Uncomment these lines for an automatically generated outline.
+%\begin{frame}{Outline}
+%  \tableofcontents
+%\end{frame}
+
+
+\begin{frame}{The ocean zoo: neutral/dianeutral conceptualization}
+
+\centering
+\includegraphics[width=.6\textwidth]{FIGS/Groeskamp_etal_figure1.pdf}
+
+\begin{itemize}
+    \item[$\star$] Interior processes (e.g., waves, mesoscale and submesoscale eddies, general circulation) respect neutral/dianeutral orientation: Montgomery (1938), Iselin (1939), McDougall (1987), McDougall, Groeskamp, Griffies (2014).
+    \item[$\star$]  Neutral directions/physics is fundamental to formulation of water mass transformation; e.g., Groeskamp, et al (2019).
+    \item[$\star$] Growing appreciation for the role of neutral diffusion in ventilation of heat and tracers; e.g., Southern Ocean. 
+    
+    \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{Solomon (1971): formal beginning of neutral physics}
+
+\begin{itemize}
+    \item[$\star$] Wrote down the \underline{correct} small slope neutral diffusive tracer flux (here written using updated notation)
+\begin{align}
+    {\bm F}^{\mbox{\tiny small}}_{h} 
+    &= - A \, \nabla_{\gamma} C = -A \, (\nabla_{z} C + {\bm S} \, \partial_{z} C)
+    \\
+    F_{z}^{\mbox{\tiny small}}
+    &= {\bm S} \cdot {\bm F}^{\mbox{\tiny small}}_{h} 
+    \\
+    {\bm S} &= 
+     -\left[ 
+      \frac{-\alpha \, \nabla_{z} \Theta + \beta \, \nabla_{z}S_{A}}
+      {\alpha \, \partial_{z} \Theta + \beta \, \partial_{z}S_{A} }
+      \right]
+    \\
+     {\cal R}^{\mbox{\tiny small}}(C) 
+      &= -\nabla_{z} \cdot {\bm F}_{h}^{\mbox{\tiny small}}
+      - \partial_{z} F_{z}^{\mbox{\tiny small}}.
+\end{align}
+
+    \item[$\star$] Argued that theoretical/numerical models should use this flux to avoid spurious diapycnal mixing.   
+    
+     \item[$\star$] "{\it The inclusion of off-diagonal terms in numerical models should not be difficult, at least in principle.}" [WRONG] 
+     
+     \item[$\star$] "{\it The important point, however, is that the inclusion or neglect of terms should be based on the physical correctness of the equation, not on computational convenience.}" [AGREE]
+     
+     \item[$\star$] Redi diffusion should instead be termed Solomon-Redi diffusion, or better yet my preferred \underline{neutral diffusion}.
+      
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Veronis (1975): problems with horizontal diffusion}
+
+
+\begin{itemize}
+    \item[$\star$] As per Solomon (1971)\footnote{Solomon (1971) was not cited by Veronis (1975). Perhaps unknown?}, geopotential diffusion is problematic in regions of steep neutral slopes. 
+     \item[$\star$] Spurious dianeutral diffusivity scales like $K \, S^{2} \approx (10^{-3}$ to $10^{-1})~\mbox{m}^{2}~\mbox{s}^{-1}$ with slope $S =10^{-3}$ to $10^{-2}$.  
+     \item[$\star$] Western bdy upwelling in Holland (1971) is due to spurious dianeutral mixing from horz diffusion: $w \, \partial_{z} \rho = K \, \partial_{xx}\rho$.
+
+
+\begin{center}
+\includegraphics[width=.4\textwidth]{FIGS/rm98_figure2.pdf}
+\\
+{\scriptsize Roberts and Marshall (1998) schematic of the Veronis Effect.}
+\end{center}
+
+  \item[$\star$] This unphysical circulation later dubbed the "Veronis Effect".  
+  
+  \item[$\star$] Veronis acknowledged Stommel for the key insight: "{\it \scriptsize In a discussion about the Holland model, H. Stommel pointed out to me the effective vertical diffusion associated w/ horizontal mixing along level surfaces.}"
+
+ \item[$\star$]  So perhaps should be called the "Veronis-Stommel Effect". 
+    
+\end{itemize}
+
+
+\end{frame}
+
+
+\begin{frame}{Redi (1982): gave us both more \& less than we needed}
+
+\begin{itemize}
+    \item[$\star$] Redi derived this tensor
+\begin{align}
+ \mathbb{K}^{\mbox{\tiny redi}} &= \frac{A }{1+S^{2}} 
+ \left[ \begin{array}{ccc}
+ 1 + S_{y}^{2} 
+ &
+ -S_{x}S_{y}
+ &
+ S_{x}
+ \\
+ -S_{x}S_{y}
+ &
+ 1 + S_{x}^{2} 
+ &
+ S_{y}
+ \\
+ S_{x}
+ &
+ S_{y}
+ &
+ S^{2}
+\end{array} 
+\right]
+\\
+{\bm F}^{\mbox{\tiny redi}}
+&= -\mathbb{K}^{\mbox{\tiny redi}} \cdot \nabla C
+\\
+{\cal R}^{\mbox{\tiny redi}}(C) 
+&= -\nabla \cdot {\bm F}^{\mbox{\tiny redi}}
+\label{eq:redi-full-tensor}
+\end{align}
+
+\item[$\star$] Projection operator form (Olbers et al 1985) is more intuitive (can be written by inspection) than Redi's matrix form 
+\begin{equation}
+    \mathbb{K}^{\mbox{\tiny redi}}_{mn} 
+    = A \, (\delta_{mn} - \hat{\gamma}_{m} \, \hat{\gamma}_{n})
+    \qquad 
+    \hat{\bm \gamma} = 
+     \frac{-\alpha \nabla \Theta + \beta \nabla S_{A}}
+          {|-\alpha \nabla \Theta + \beta \nabla S_{A}|}
+\end{equation}
+
+\item[$\star$] Critique of Redi (1982):
+  \begin{itemize}
+      \item[$\bullet$] No model tests (left GFDL for Princeton plasma physics). 
+      \item[$\bullet$] No appreciation for the small slope approximation (Solomon (1971) uncited; perhaps still unknown?).  
+      \item[$\bullet$] We do not need all of $\mathbb{K}^{\mbox{\tiny redi}}$ since different physics arise when the small slope approximation goes wrong.  
+  \end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{McDougall (1987): neutral directions}
+
+%\begin{figure}
+\begin{center}
+\includegraphics[width=.65\textwidth]{FIGS/Encylcopedia_Neutral_figure4.pdf}
+%\caption{
+\newline 
+{\scriptsize Neutral trajectory and $\gamma^{n}$ surface bounded by $\sigma_{0}$ and $\sigma_{4}$. Atlantic section.  From McDougall and Jackett (2009)}
+%}
+\end{center}
+%\end{figure}
+
+\begin{itemize}
+    \item[$\star$] Importance of local referencing to define  neutral directions for rotating the diffusion tensor.  
+    
+    \item[$\star$] Neutral orientation empirically justified by small levels of measured dianeutral mixing in the ocean interior (McDougall, Groeskamp, \& Griffies 2014).     
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Requirements for neutral diffusion}
+
+\begin{itemize}
+    \item[$\star$] Understand the physical processes inducing neutral diffusion.
+       \begin{itemize}
+           \item[$\bullet$] Transient mesoscale eddy stirring induces a downscale tracer variance cascade; i.e., mixing enhanced by eddy stirring. 
+            \item[$\bullet$] How do we measure eddy strength and spatio-temporal structure when they are not resolved? This is the key question that continues to capture physical oceanographers focused on eddy parameterizations.
+       \end{itemize}
+    \item[$\star$] Neutral/dianeutral orientation of the diffusion operator, following McDougall (1987) and McDougall, Groeskamp \& Griffies (2014).   
+    
+    \item[$\star$] Smart numerical methods to capture the above physics.  This issue is the focus of my talk. Arguably, we are only just now starting to get a grip. 
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Cox (1987)}
+
+\begin{itemize}
+    \item[$\star$]  Some simulation improvements, but the scheme had problems.
+    \item[$\star$] Implemented an \underline{incorrect} form of small slope approximation
+\begin{equation}
+    \mathbb{K}^{\mbox{\tiny cox}} = 
+    A \left[
+    \begin{array}{ccc} 
+    1  & \color{red} -S_{x} \, S_{y} \color{black}  & S_{x} \\
+    \color{red}  -S_{x} \, S_{y} \color{black} & 1 & S_{y}   \\
+    S_{x}  & S_{y} & S^{2}
+    \end{array}
+   \right]
+   \end{equation}    
+   
+   \item[$\star$]  Solomon (1971) had it right (Cox did not know of Solomon), then Gent and McWilliams (1990) explicitly corrected Cox.\footnote{Gent and McWilliams  graciously dedicated their 1990 paper to Mike Cox, who died in 1989 at age 48. See Bryan (1991) for a survey of Cox's career.}
+    
+    \item[$\star$] Required horizontal background diffusion to suppress a numerical instability (even if drop \color{red} the wrong extra \color{black} terms)
+\begin{equation}
+    \mathbb{K}^{\mbox{\tiny cox effective}}_{mn} = 
+    \mathbb{K}^{\mbox{\tiny cox}}_{mn}
+    + K \, (\delta_{mn} - \hat{\bm z}_{m} \, \hat{\bm z}_{n}) \qquad 
+    K \approx A/10.
+   \end{equation}     
+    
+    \item[$\star$] $K$ largely counteracts benefits of rotated diffusion. 
+    \item[$\star$] Employed slope tapering in a form that produced huge amounts of spurious diapycnal mixing; later remedied by Gerdes et al (1991), Danabasoglu and McWilliams (1995).
+\end{itemize}
+
+
+
+\end{frame}
+
+
+\begin{frame}{Griffies et al (1998): remedied problems with Cox scheme}
+
+\begin{itemize}
+ \item[$\star$] Respect neutrality (McDougall 1987) eliminates Cox instability 
+ \begin{equation}
+     \alpha {\bm F}(\Theta) = \beta {\bm F}(S_{A})
+ \end{equation}
+
+ 
+ \item[$\star$] Functional method led to "triad discretization" ensuring the reduction of global variance
+ \begin{align}
+     2 {\cal F} = \int ({\bm F} \cdot \nabla C) \, \mathrm{d}V
+% &= -\frac{1}{2} \int  (\nabla C \cdot \mathbb{K} \cdot \nabla C) \, \mathrm{d}V
+     \le 0 
+%     \\
+    \qquad 
+    \delta {\cal F}/\delta C 
+     = -(\nabla \cdot {\bm F}) \, \mathrm{d}V.
+ \end{align}
+ 
+\item[$\star$] Scheme is stable: requires no horizontal background diffusion. 
+ 
+\begin{center}
+\includegraphics[width=.75\textwidth]{FIGS/GGPLDS_fig6_9.pdf}
+\end{center}
+ 
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{GM90 + neutral diffusion relaxation test: $\Theta,S$ active}
+
+\begin{center}
+\includegraphics[width=.5\textwidth]{FIGS/GGPLDS_1998.pdf}
+%\caption{
+\newline 
+{\scriptsize Top panel: GM90 + Cox87 relaxation test. Bottom four panels: GM90 + Griffies et al (1998).}
+%}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Beckers et al (1998,2000): no-go theorem}
+
+\begin{itemize}
+ \item[$\star$] Linear, consistent, local implementation of rotated diffusion can produce extrema; i.e., cannot have fully downgradient rotated diffusive fluxes on a local grid stencil.
+ 
+\item[$\star$] Argued for (non-linear) flux limiters or filters.  
+  
+\item[$\star$] Gnanadesikan (1999) also showed issues w/ biological tracers.  
+
+\item[$\star$] No GCM incorporated Beckers' nonlinear methods, largely since problems they identified were not seen as urgent enough. 
+  
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=.8\textwidth]{FIGS/beckers_etal_fig25.pdf}
+\end{center}
+ 
+ 
+
+\end{frame}
+
+
+\begin{frame}{Lemarie et al (2012a,b): advanced triads + terrain models}
+
+\begin{itemize}
+ \item[$\star$] Smart biasing of triad scheme reduces extrema production. 
+ \item[$\star$] Implemented in ROMS, helping making it a viable climate model. 
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=\textwidth]{FIGS/lemarie.pdf}
+\end{center}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Neutral slope tapering: stability does not imply accuracy}
+
+\begin{itemize}
+
+\item[$\star$] Tapering allows us to run the model stably.
+
+ \item[$\star$] But accuracy is degraded when neutral slopes are steeper than the grid aspect ratio (Beckers et al 2000)
+ (akin to the representation of topography).
+
+\end{itemize}
+
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=.8\textwidth]{FIGS/neutral_direction.pdf}
+\caption{Zonal-vertical grid cell arrangement \& sample neutral directions.}
+\label{fig:neutral_direction}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Layer (2d convergence) vs. level (3d convergence)}
+
+\begin{itemize}
+
+\item[$\star$] Layer models compute isopycnal (or ideally neutral tangent plane) diffusion as a 2d layer-convergence 
+($h^{\gamma} = $ thickness)
+\begin{equation}
+     {\bm F}^{\mbox{\tiny layer}}= - A \, \nabla_{\gamma} C
+     \qquad 
+      {\cal R}^{\mbox{\tiny layer}} = 
+     -\frac{1}{h^{\gamma} }  
+     \left[ \nabla_{\gamma} \cdot (h^{\gamma} \,
+     {\bm F}^{\mbox{\tiny layer}} ) \right].
+\end{equation}
+
+\item[$\star$] Level models compute small slope neutral diffusion as a 3d level-convergence
+\begin{equation}
+   {\bm F}^{\mbox{\tiny level}} 
+  =  -A \, \left[ \nabla_{\gamma}  + \hat{\bm z} \, ({\bm S} \cdot \nabla_{\gamma} ) \right] C  
+   \qquad 
+   {\cal R}^{\mbox{\tiny level}} 
+    = -\nabla_{z} \cdot {\bm F}_{h}^{\mbox{\tiny level}}   
+    - \partial_{z} F_{z}^{\mbox{\tiny level}}
+\end{equation}
+
+\item[$\star$] Maths shows that the operators are identical
+(Griffies 2004, McDougall, Groeskamp, Griffies 2014) 
+\begin{equation}
+ {\cal R}^{\mbox{\tiny layer}}  = {\cal R}^{\mbox{\tiny level}}.
+\end{equation}
+
+\item[$\star$] Hence, in continuum, neutral diffusion formulated layer-wise is the same as small slope neutral diffusion formulated level-wise. 
+
+\item[$\star$] But they are distinct numerically. Layer approach is ensured to be downgradient, whereas level approach (rotated diffusion) can suffer from extrema ala Beckers et al (1998). 
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{New method: vertically non-local slope/gradient estimate}
+
+\begin{itemize}
+
+\item[$\star$] Groeskamp et al (2019, JAMES submitted): observational analysis method focused on cabbeling and ventilation diagnostics (level 3d convergence implementation). 
+
+\item[$\star$] Shao et al (2019, JAMES in prep): MOM6 ALE-layer neutral diffusion (2d convergence to ensure no extrema).  
+
+\item[$\star$] Slope tapering imposed by grid resolution: cannot represent a neutral direction so steep that it leaves domain within a cell. 
+
+\item[$\star$]  Hence, "max slope" is chosen by grid resolution not modeler.
+
+
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=.5\textwidth]{FIGS/groeskamp.pdf}
+\label{fig:groeskamp}
+\end{center}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Smith \& Gent (2004): anisotropic GM/diffusion}
+
+\begin{itemize}
+
+\item[$\star$]  Lateral anisotropy for the combined GM + neutral diffusion scheme with equal diffusivities (to simplify the operator).   
+
+\item[$\star$] Compelling results for eddying simulations: enhanced eddy energy + deep overflow with an adiabatic dissipation operator.   
+
+
+
+\begin{center}
+\includegraphics[width=.9\textwidth]{FIGS/SmithGent2004.pdf}
+\label{fig:SmithGent}
+\end{center}
+
+\item[$\star$] Alas, anisotropic GM remains an idea yet to mature.
+  \begin{itemize}
+      \item[$\bullet$] No further published testing of the scheme.
+      \item[$\bullet$] Need to further study diffusivities, tapering, discretization, sensitivities, etc.  
+      \item[$\bullet$] The delay is largely due to Rick's tragic accident.  
+ \end{itemize}
+\end{itemize}
+
+
+\end{frame}
+
+
+\begin{frame}{Comments on diagnosing tensor elements}
+
+\begin{itemize}
+
+\item[$\star$] Griffies (1998): GM skew + small angle neutral diffusion (both assumed isotropic)
+\begin{equation}
+ \mathbb{A}^{\mbox{\tiny GM skew}} + \mathbb{K}^{\mbox{\tiny small}}
+=
+\left[
+ \begin{array}{ccc}
+ A & 0 & (A - A_{\mbox{\tiny gm}}) \, S_{x}
+ \\
+ 0 &  A & (A - A_{\mbox{\tiny gm}}) \, S_{y}
+ \\
+ (A + A_{\mbox{\tiny gm}}) \, S_{x}
+ &
+ (A + A_{\mbox{\tiny gm}}) \, S_{y}
+ &
+ A \, S^{2}
+ \end{array} 
+ \right]
+ \label{eq:diffusion-plus-gm-skew}
+\end{equation}
+
+\item[$\star$] Fox-Kemper, Lumpkin, Bryan (2013) diagnose elements of the tensor from tracer release experiments. 
+
+\item[$\star$] They interpret their "generalized Griffies tensor" in terms of anisotropic GM + anisotropic neutral diffusion.
+
+\item[$\star$] Yet is there a missing term? 
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Neutral skew diffusion from polarized tracer fluxes}
+
+\begin{itemize}
+
+\item[$\star$] Layer averaged tracer equation (Smith 1999, section 9.4.3 of Griffies 2004)
+\begin{align}
+ (\partial_{t} + \widehat{\bm u} \cdot \nabla_{\gamma} ) \,  \widehat{C}
+ &= -\frac{1}{\overline{h}^{\gamma}} \, 
+   \nabla_{\gamma} \cdot (\overline{h}^{\gamma} 
+   \, \widehat{C'' \, {\bm u}''})
+  \\
+  \widehat{\Phi} = \frac{\overline{\Phi \, h}^{\gamma}}{\overline{h}^{\gamma}}
+  \qquad \Phi &= \widehat{\Phi} + \Phi'' 
+\qquad
+\widehat{\bm u} = \overline{\bm u}^{\gamma} + {\bm u}^{\mbox{\tiny bolus}}
+  \\
+  \widehat{C'' \, {\bm u}''} 
+  &= - \mathbb{M} \cdot \nabla_{\gamma} \widehat{C}
+\label{eq:thickness-tracer-evolution}
+\end{align}
+
+\item[$\star$] The $\mathbb{M}$ tensor arises from correlations between tracer and velocity on the neutral tangent plane.  It has both a symmetric and an anti-symmetric component.  
+
+\item[$\star$] Polarized tracer fluxes (Middleton and Loder 1989) contribute to the anti-symmetric component of 
+$\mathbb{M}$.
+
+\item[$\star$] We presently only parameterize the symmetric component of $\mathbb{M}$ via neutral diffusion. 
+
+\item[$\star$] What justifies ignoring unresolved polarized tracer fluxes?\footnote{\scriptsize Ongoing work from Dhruv Balwada and Shafer Smith informs my understanding.}  
+
+%\item[$\star$] SGS Grand Unified Tracer Tensor (GUTT)\footnote{\scriptsize Ongoing work from Dhruv Balwada and Shafer Smith informs my understanding.} 
+%\begin{equation}
+%    \mathbb{J}^{\mbox{\tiny GUTT}} = 
+%    \mathbb{K}^{\mbox{\tiny dianeutral diff}}
+%    +
+%    \mathbb{A}^{\mbox{\tiny quasi-Stokes}}
+%    +
+%    \mathbb{K}^{\mbox{\tiny neutral diff}}
+%    +
+%    \mathbb{A}^{\mbox{\tiny polarized skew}}.
+%\end{equation}
+%Each of the lateral tensors are generally anisotropic.
+
+\end{itemize}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Closing comments}
+
+\begin{itemize}
+
+\item[$\star$] For many years, neutral diffusion was largely a numerics problem rather than a physics problem. Yet there is more! 
+
+\item[$\star$] For example, how do we relate the diffusivities? \begin{itemize}
+
+        \item[$\bullet$] The Dukowicz and Smith (1999) prescription of $A = A_{\mbox{\tiny gm}}$ is inconsistent with QG ideas from Smith and Marshall (2009) (which are supported by MITgcm study of Abernathey et al (2013)):
+    \begin{equation}
+           \partial_{z}(S \, A_{\mbox{\tiny gm}})  =
+           A \, (\partial_{z}S -\beta/f).
+    \end{equation}       
+    
+    \item[$\bullet$] Eddy stirring leading to neutral diffusion (possibly) also leads to polarized skew diffusion. Are their diffusivities the same? What if there is no polarization?    
+         
+       \end{itemize}
+ 
+      \item[$\bullet$] Bottomline: we must (continue) to couple the physics and numerics of neutral diffusion + eddy advection + (polarized skew diffusion), perhaps even moreso than in the past. 
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Many thanks!}
+
+
+Many thanks to numerous scientists whose contributions are acknowledged in the references, some of whom continue to help expand the envelope of our understanding.  
+
+\vspace{.25cm} Thanks in particular to Dhruv Balwada, Sjoerd Groeskamp, and Shafer Smith for comments on this talk.  
+
+
+\vspace{1cm}
+
+Further sincere thanks to Peter Gent for letting me contribute to his celebration. And immense thanks for his decades of contributions and inspiration to our community of amazing scientists. 
+
+\centering 
+
+\vspace{0.5cm}
+Quoting from Kirk Bryan: \underline{Hip Hip Hooray!}!  
+
+
+
+
+\end{frame}
+
+
+
+\begin{frame}{References I}
+
+\begin{itemize}
+\tiny
+
+\item[$\bullet$] Abernathey, R., and D. Ferreira, and A.  Klocker, 2013:  Diagnostics of isopycnal mixing in a circumpolar channel, {\it Ocean Modelling}, {\bf 72}, 1-16.
+
+\item[$\bullet$] Beckers, J.M., Burchard, H., Campin, J.M., Deleersnijder, E., Mathieu, P.P., 1998: Another reason why simple discretizations of rotated diffusion operators cause problems in ocean models: Comments on Isoneutral diffusion in a z-coordinate ocean model. {\it Journal of Physical  Oceanography}, {\bf 28}, 1552–1559.
+
+\item[$\bullet$] Beckers, J.M., Burchard, H., Deleersnijder, E., Mathieu, P.P., 2000: Numerical discretization of rotated diffusion operators in ocean models. {\it Monthly Weather Review}, {\bf 128}, 2711–2733.
+
+\item[$\bullet$] Bryan, K., 1991: Michael Cox (1941-1989): his pioneering contributions to ocean circulation modeling, {\it Journal of Physical Oceanography}, {\bf 21}, 1259-1270.
+
+\item[$\bullet$] Cox, M. D., 1987: Isopycnal diffusion in a z-coordinate ocean model, {\it Ocean Modelling}, Issue 74. 
+
+\item[$\bullet$] Danabasoglu, G., and J.C. McWilliams, 1995: Sensitivity of the global ocean circulation to 
+parameterizations of mesoscale tracer transports, {\it Journal of Climate}, {\bf 8},  2967-2987.
+
+\item[$\bullet$] Dukowicz, J.K. and R.D. Smith, 1997:  
+Stochastic theory of compressible turbulent fluid transport, {\it Physics of Fluids}, {\bf 9}, 3523-3529.
+
+\item[$\bullet$] Fox-Kemper, B., R. Lumpkin, F.O. Bryan, 2013: Lateral transport in the ocean interior, in 
+{\it Ocean Circulation and Climate, 2nd Edition: A 21st Century Perspective}, edited by G. Siedler,  S.M. Griffies, J. Gould, J. Church, International Geophysics Series, {\b 103}, pages 185-209.
+
+\item[$\bullet$] Gent, P.R. and J.C. McWilliams, 1990: 
+Isopycnal mixing in ocean circulation models, {\it Journal of Physical Oceanography}, {\bf 20}, 150-155.
+
+\item[$\bullet$] Gent, P.R., 2011: The Gent-McWilliams parameterization: 20/20 hindsight, {\it Ocean Modelling}, {\bf 39}, 2-9. 
+
+\item[$\bullet$] Gerdes, R., C. {K\"{o}berle}, and J. Willebrand, 1991: The influence of numerical advection schemes on the results of ocean general circulation models, {\it Climate Dynamics}, {\bf 5}, 211-226.
+
+\item[$\bullet$] Gnanadesikan, A., 1999: Numerical issues for coupling biological models with isopycnal mixing schemes. Ocean Modelling, {\bf 1}, 1-15.  
+
+\item[$\bullet$] Griffies, S.M., A. Gnanadesikan, R.C. Pacanowski, V. Larichev, J.K. Dukowicz, R.D. Smith, 1998: Isoneutral diffusion in a z-coordinate ocean model, {\it Journal of Physical Oceanography}, {\bf 28}, 805-830. 
+
+\item[$\bullet$] Griffies, S.M., 1998: The Gent-McWilliams skew flux, {\it Journal of Physical Oceanography}, {\bf 28}, 831-841.
+
+\item[$\bullet$] Groeskamp, S., S.M. Griffies, 
+D. Iudicone, R. Marsh, A.J. George Nurser, Jan D. Zika, 2019: The Water Mass Transformation Framework for Ocean Physics and Biogeochemistry,  {\it Annual Reviews of Marine Science}, {\bf 11}, 21.1-21.35.
+
+\item[$\bullet$] Groeskamp, S., P.M. Barker,  T.J. McDougall, R.P. Abernathey, S.M. Griffies, 
+VENM: An algorithm to accurately calculate neutral slopes and gradients, submitted to JAMES. 
+
+\item[$\bullet$] Holland, W.R., 1971: Ocean tracer distributions: a preliminary numerical experiment,
+{\it Tellus}, {\bf 23}, 371-392.
+
+\item[$\bullet$] Iselin, C.O.D., 1939: The influence of vertical and lateral turbulence on the characteristics of the waters at mid-depth, EOS, {\bf 3}, 414-417.
+
+
+
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{References II}
+
+\begin{itemize}
+\tiny
+
+
+\item[$\bullet$] Lemari{\'{e}}, F., J. Kurian,  A.F. Shchepetkin,  M.J. Molemaker, F. Colas, J.C. McWilliams, 2012a, Are There Inescapable Issues Prohibiting the Use of Terrain-Following Coordinates in Climate Models?,
+{\it Ocean Modelling}, {\bf 42}, 57-79.
+
+\item[$\bullet$] Lemari{\'{e}}, F., L. Debreu, A.F. Shchepetkin,  J.C. McWilliams, 2012b, On the stability and accuracy of the harmonic and biharmonic isoneutral mixing operators in ocean models, {\it Ocean Modelling},
+{\bf 52-53}, 9-35.
+
+\item[$\bullet$] McDougall, T.J., 1987: Neutral surfaces,
+{\it Journal of Physical Oceanography}, {\bf 17}, 1950--1967.
+
+\item[$\bullet$] McDougall, T.J., S. Groeskamp, and S.M. Griffies, 2014: On geometric aspects of interior ocean mixing, {\it Journal of Physical Oceanography}, {\bf 44}, 2164--2175.
+
+\item[$\bullet$] McDougall, T.J. and D.R. Jackett, 2009: Neutral surfaces and the equation of state, {\it Encyclopedia of Ocean Sciences}, 25-31. 
+
+\item[$\bullet$] Middleton, J.F. and J. W. Loder, 1989:
+Skew fluxes in polarized wave fields, {\it Journal of Physical Oceanography}, {\bf 19}, 68-76.
+
+\item[$\bullet$] Montgomery, R.B., 1938, Circulation in upper layers of southern North Atlantic, 
+{\it Papers in Physical Oceanography}, {\bf 6}, 55, 
+WHOI Press. 
+
+\item[$\bullet$] Olbers, D.J., M. Wenzel and J. Willebrand, 1985: The inference of North Atlantic circulation patterns from climatological hydrographic data, {\it Reviews of Geophysics}, {\bf 23}, 313--356.
+
+Redi, M., Oceanic isopycnal mixing by coordinate rotation, {\it Journal of Physical Oceanography}, {\bf 12}, 1154-1158.
+
+\item[$\bullet$] Redi, M., Oceanic isopycnal mixing by coordinate rotation, {\it Journal of Physical Oceanography}, {\bf 12}, 1154-1158.
+
+\item[$\bullet$] Roberts. M.J. and D. Marshall, 1998: 
+Do we require adiabatic dissipation schemes in eddy-resolving ocean models?,  {\it Journal of Physical Oceanography}, {\bf 28}, 2050-2063.
+
+\item[$\bullet$] Shao, A., A.J. Adcroft, R.W. Hallberg, S.M. Griffies, 2019: An extrema-diminishing general-coordinate implementation of neutral diffusion, in prep for JAMES. 
+
+\item[$\bullet$] Smith, R.D., 1999: The primitive equations in the stochastic theory of adiabatic stratified turbulence {\it Journal of Physical Oceanography}, {\bf 29}, 1865-1880.
+
+\item[$\bullet$] Smith, R.D. and P.R. Gent, 2004: Anisotropic Gent-McWilliams parameterization for ocean models, {\it Journal of Physical Oceanography}, {\bf 34}, 2541-2564.
+
+\item[$\bullet$] Smith, K.S. and J. Marshall, 2009:
+Evidence for Enhanced Eddy Mixing at Middepth in the Southern Ocean, {\it Journal of Physical Oceanography}, 
+{\bf 39}, 50-69.
+
+\item[$\bullet$] Solomon, H., 1971: On the representation of isentropic mixing in ocean circulation models, {\it Journal of Physical Oceanography}, {\bf 1}, 233-234.
+
+\item[$\bullet$] Veronis, G., 1975: The role of models in tracer studies, in {\it Numerical Models of Ocean Circulation}, National Academy of Sciences, 133-146. 
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\end{document}
