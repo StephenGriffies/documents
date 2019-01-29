@@ -1,0 +1,1158 @@
+%LATEX 
+%\documentclass[10pt,draft]{beamer}
+\documentclass[10pt]{beamer}
+\usepackage{beamerthemesplit} % new 
+
+
+\usepackage{bm,amsmath,amssymb}
+\usepackage{mathtools,slashed,esint}
+
+\usepackage{animate}
+
+
+\usepackage{pgf}
+\usepackage{wasysym}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{wasysym}
+\usepackage{centernot}
+
+\usepackage{tikz}
+\usepackage{pgf}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+%\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{media9}
+\usepackage{natbib}
+\usepackage{color}
+
+%\usepackage{../../../../../Documents/TEX/styles/mystyle_beamer}
+
+\usepackage{ragged2e}
+\usepackage{etoolbox}
+\usepackage{lipsum}
+
+\apptocmd{\frame}{\justifying}{}{}
+
+\usepackage{hyperref}  % must be used last in the list of packages 
+
+\hypersetup{colorlinks=true,linkcolor=green,citecolor=green,filecolor=green,urlcolor=green} 
+
+
+\setlength\fboxsep{0pt}
+\setlength\fboxrule{0.5pt}
+
+\newcommand\myeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily M constant}}}{=}}}
+\newcommand\myeqq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily Stokes Thm}}}{=}}}
+
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+\newcommand{\Simley}[1]{%
+\begin{tikzpicture}[scale=0.11]
+    \newcommand*{\SmileyRadius}{1.0}%
+    \draw [fill=brown!10] (0,0) circle (\SmileyRadius)% outside circle
+        %node [yshift=-0.22*\SmileyRadius cm] {\tiny #1}% uncomment this to see the smile factor
+        ;  
+
+    \pgfmathsetmacro{\eyeX}{0.5*\SmileyRadius*cos(30)}
+    \pgfmathsetmacro{\eyeY}{0.5*\SmileyRadius*sin(30)}
+    \draw [fill=cyan,draw=none] (\eyeX,\eyeY) circle (0.15cm);
+    \draw [fill=cyan,draw=none] (-\eyeX,\eyeY) circle (0.15cm);
+
+    \pgfmathsetmacro{\xScale}{2*\eyeX/180}
+    \pgfmathsetmacro{\yScale}{1.0*\eyeY}
+    \draw[color=red, domain=-\eyeX:\eyeX]   
+        plot ({\x},{
+            -0.1+#1*0.15 % shift the smiley as smile decreases
+            -#1*1.75*\yScale*(sin((\x+\eyeX)/\xScale))-\eyeY});
+\end{tikzpicture}%
+}%
+
+
+
+% beamer prologue begins here
+\mode<presentation>
+{                               % see user guide for choices
+  \usetheme{Frankfurt}
+%  \usetheme{Madrid}
+%  \usecolortheme{seahorse}
+%  \usecolortheme[RGB={205,173,0}]{structure} 
+  \usecolortheme[RGB={0,100,180}]{structure} 
+  \usefonttheme[onlymath]{serif}
+  \setbeamercovered{transparent} % or whatever (possibly just delete it)
+}
+
+% drop those navigation symbols at bottom right
+%\setbeamertemplate{navigation symbols}{} 
+\setbeamertemplate{navigation symbols}{}
+%\setbeamertemplate{footline}[frame number]
+
+
+
+\title[Ocean circulation]{ Ocean circulation
+  as a problem in mathematical \& computational physics:  a historical
+  and contemporary  perspective} % (optional)
+
+\subtitle{ {\it AMSI Summer School in the Mathematical Sciences} \\
+  30 Jan 2019 \\ \vspace{.25cm}
+  University of New South Wales \\
+ Sydney, Australia  \\ Traditional lands of the Bedegal people of the Eora Nation
+%\vspace{.25cm}
+%\fbox{\includegraphics[width=.3\textwidth]{../../../../../Griffies/lectures/India_2013/griffies/figs/cm2p6.png}}
+}
+
+\author[{\sc Stephen.M.Griffies@gmail.com}] % short form for footer, use if many authors
+{ {\sc Stephen.Griffies@noaa.gov  \\ SMG@Princeton.edu \\  Stephen.M.Griffies@gmail.com 
+} 
+}
+% - Use the \inst{?} command only if the authors have different 
+%   affiliation. 
+
+
+
+
+\institute[NOA/GFDL + Princeton University]{NOAA/GFDL + Princeton University} 
+
+%\date{\today}
+\date{}
+
+
+%\logo{\includegraphics[height=5mm]{../../../../../Documents/images/PrincetonLogo.png}} 
+\logo{\includegraphics[height=5mm]{../../../../../Documents/images/noaa-logo.png}} 
+
+\subject{Talks} % for "PDF information catalog", can be left out. 
+
+% this shows the outline at the beginning of every section,
+% highlighting the current section
+ \AtBeginSection[]
+ {
+   \begin{frame}
+     \frametitle{Outline}
+ \tableofcontents[ 
+ currentsubsection, 
+ hideothersubsections, 
+ sectionstyle=show/hide, 
+ subsectionstyle=show/hide, 
+ ] 
+   \end{frame}
+ }
+
+
+\setlength{\unitlength}{1mm}  % used in picture environment
+
+\begin{document}
+
+  
+% beamer makes the titlepage from info above: author, date, title, etc.
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Goals and Assumptions}
+
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item This talk offers a taste for the mathematics and physics
+  encountered when studying ocean circulation:
+  \begin{itemize}
+    \item[$\star$] A rapid-fire historical introduction to geophysical fluid mechanics.  
+  \end{itemize}
+
+\item With Australia's finest math/science students in the audience, I
+  assume you wish to see a few of the details. 
+  \begin{itemize}
+  \item[$\star$] Physical oceanography is a rich sub-discipline of
+    mathematical \& computational physics with sophisticated methods
+    used to unravel understanding and improve predictions.
+  \end{itemize}
+
+\item We encounter animations from state-of-the-science computational
+  fluid mechanics simulations of ocean flows.
+  \begin{itemize}
+  \item[$\star$] Eye-candy to illustrate the richness, complexity, and
+    beauty of ocean flows.
+  \end{itemize}
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Some maths/physics relevant to ocean circulation}
+
+%  We make use of a range of mathematical and physical tools/ideas for
+%  studying ocean fluid mechanics, including the following: 
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Linear \& nonlinear partial differential equations of continuum
+  mechanics;
+
+\item Geometrical/tensor methods to pose the governing equations on a
+  rotating and stratified sphere;
+
+\item Numerical methods for computer simulations used as a tool for
+  experimental investigations;
+
+\item Geometrical/tensor methods to analyze the space-time properties
+  of complex and multi-scale flows emerging from the governing
+  equations;
+
+\item Dynamical systems methods to conceptually frame multi-scale
+  linear, nonlinear, and chaotic behaviour of currents, waves,
+  instabilities, coherent structures, and turbulence.
+
+\item Statistical methods for robust analysis and probabilistic
+  methods for prediction;
+
+\item Big data science tools to reveal underlying patterns to help
+  diagnose physical processes from within the huge data streams coming
+  from satellites and simulations.
+
+
+\end{itemize}
+
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Animation: sea surface temperature and currents}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.7\textwidth]{./images/pictures/gaea.jpg}}
+\end{center}
+
+\begin{center}
+Computer model simulation of sea surface temperature from the
+\href{https://vimeo.com/27076776}{NOAA/GFDL/Princeton climate model
+  CM2.6} run on the Gaea supercomputer of the US Department of Energy. 
+\end{center}
+
+\end{frame}
+
+
+
+% beamer makes the ToC from sections and subsections below...
+ \begin{frame}
+   \frametitle{Outline}
+   \tableofcontents
+ \end{frame}
+
+
+\section{Building the math/physics framework}
+
+
+\begin{frame}
+  \frametitle{Archimedes of Syracuse: buoyancy}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.22\textwidth]{./images/people_pre_16thcentury/Domenico-Fetti_Archimedes_1620.jpg}}
+\hspace{2cm}  
+\fbox{\includegraphics[width=0.38\textwidth]{./images/climate/WunschFerrari_fig1.pdf}}
+\center{\scriptsize \href{https://en.wikipedia.org/wiki/Archimedes}{Archimedes (287 - c.212 BC)}
+\hspace{1.5cm}  Pacific buoyancy
+(\href{}{Wunsch \& Ferrari 2004)} }
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item ``Eureka Moment'': an understanding of how the buoyancy force on an object in a
+  liquid equals to the weight of displaced liquid.
+\begin{equation}
+ {\bm F}^{\mbox{\tiny buoyancy}} = \hat{\bm z} \, g \, \rho_{\mbox{\tiny liquid}} \, V_{\mbox{\tiny displace}}.
+\end{equation}
+
+\item Gravity stratifies according to buoyancy: light water above heavy.
+
+\item Buoyancy is built into the hydrostatic balance:
+  $\mathrm{d} p/\mathrm{d} z = -\rho \, g$: pressure at a point equals
+  to the weight per area above the point.
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Leonardo  di ser Piero da Vinci: visualizing fluid flow}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.31\textwidth]{./images/people_pre_16thcentury/Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg}}
+\hspace{1.5cm}  
+\fbox{\includegraphics[width=0.31\textwidth]{./images/people_pre_16thcentury/Studies_of_Water_passing_Obstacles_and_falling.jpg}}
+\center{\scriptsize \href{https://en.wikipedia.org/wiki/Leonardo_da_Vinci}{Leonardo da Vinci (1452-1519)}
+\hspace{1cm}  Flow around obstacles \& entering a pool}
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item Leonardo's observations and visualizations of laminar and
+  turbulent fluid flows were both insightful and prescient.
+\item Detail in his sketches suggest an understooding of vorticity \&
+  vortex tubes: ${\bm \omega} = \nabla \wedge {\bm v}$.
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Newton \& LaPlace: mechanics \& math physics}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.23\textwidth]{./images/people_17-19th_century/GodfreyKneller-IsaacNewton-1689.jpg}}
+\hspace{2cm} 
+\fbox{\includegraphics[width=0.24\textwidth]{./images/people_17-19th_century/Laplace.jpg}}
+\center{\scriptsize \href{https://en.wikipedia.org/wiki/Isaac_Newton}{Newton (1642-1727)}
+\hspace{2cm}  \href{https://en.wikipedia.org/wiki/Pierre-Simon_Laplace}{LaPlace (1749-1827)}}
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item Calculus was formulated by Newton and LaPlace. 
+\item Newton's 2nd Law of Motion: fundamental to all classical mechanical systems, including fluids 
+\begin{equation}
+   {\bm F} = \frac{\mathrm{d}{\bm P}}{\mathrm{d}t}  \; \; \; \;  \myeq \; \; \; \;   M \, \frac{\mathrm{d}^{2} {\bm X}}{\mathrm{d}t^{2}} = M \, {\bm A}
+  \qquad \left( {\bm P} = \frac{\mathrm{d}{\bm X}}{\mathrm{d}t}   \right).
+\end{equation}
+\item Both made fundamental discoveries in the theory of tides. 
+\end{itemize}
+\end{exampleblock}{}
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Coriolis: motion in a rotating reference frame}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.18\textwidth]{./images/people_17-19th_century/Gaspard-Gustave_de_Coriolis.jpg}}
+\hspace{1cm}
+{\includegraphics[width=.6\textwidth]{./images/schematics/geostrophy_forces.pdf}}
+\vspace{-.2cm}
+\center{\scriptsize \href{https://en.wikipedia.org/wiki/Gaspard-Gustave_de_Coriolis}{Coriolis (1792-1843)}
+  \hspace{1cm}  Geostrophic balance around a northern hemisphere low}
+
+\end{center}
+
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item Motion in a rotating reference frame introduces a non-inertial
+  force that deflects motion to the right in northern hemisphere and
+  left in the southern hemisphere 
+\begin{equation}
+   {\bm F}_{\mbox{\tiny Coriolis}}  = - 2 \, \rho \,  {\bm \Omega} \wedge  {\bm v}.
+\end{equation}
+
+\item Allows for steady {\it geostrophic balance} between pressure and Coriolis forces 
+\begin{equation}
+ {\bm F}_{\mbox{\tiny Coriolis}}  +  {\bm F}_{\mbox{\tiny pressure}}  = 0  \Longrightarrow 
+   2 \, \rho \,  {\bm \Omega} \wedge  {\bm v} = -\nabla p. 
+\end{equation}
+
+\end{itemize}
+\end{exampleblock}{}
+
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Fluid dynamical equations for ocean motion}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.15\textwidth]{./images/people_17-19th_century/Claude-Louis_Navier.jpg}}
+\hspace{1.5cm} 
+\fbox{\includegraphics[width=0.15\textwidth]{./images/people_17-19th_century/Ggstokes.jpg}}
+
+\center{\scriptsize 
+\href{https://en.wikipedia.org/wiki/Claude-Louis_Navier}{Navier (1785-1836)}
+\hspace{1.5cm}
+\href{https://en.wikipedia.org/wiki/Sir_George_Stokes,_1st_Baronet}{Stokes (1819-1903)}
+}
+
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item Newton and LaPlace's calculus and mechanics is the foundation to
+  the dynamical equation for a continuous fluid media.
+
+\item Adding Coriolis force yields the ocean dynamical equations
+\begin{equation}
+  \underbrace{ \frac{\partial {\bm v}}{\partial t}}_{\mbox{\tiny local acceleration}}
+  + 
+  \underbrace{ ({\bm v} \cdot \nabla ) \, {\bm v} }_{\mbox{\tiny advection by flow}} 
+ +
+  \underbrace{ 2 \, {\bm \Omega} \wedge {\bm v} }_{\mbox{\tiny Coriolis}} 
+= \underbrace{ -\frac{1}{\rho} \nabla p}_{\mbox{\tiny pressure}}
+   + 
+  \underbrace{ \rho \, g \, \hat{\bm z}}_{\mbox{\tiny gravity}}
+ + 
+  \underbrace{ \nabla \cdot {\bm \tau}_{\mbox{\tiny stress}}}_{\mbox{\tiny friction}}
+\end{equation}
+
+\item This equation is relevant for nearly all observed fluid motions
+  from galaxies to blood.
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Euler and Lagrange: dual views of fluid motion}
+
+\begin{center}
+\vspace{-.3cm}
+\fbox{\includegraphics[width=0.15\textwidth]{./images/people_17-19th_century/Leonhard_Euler.jpg}}
+\hspace{2cm} 
+\fbox{\includegraphics[width=0.17\textwidth]{./images/people_17-19th_century/Lagrange_portrait.jpg}}
+
+\vspace{-.25cm}
+\center{\scriptsize 
+\href{https://en.wikipedia.org/wiki/Leonhard_Euler}{Euler (1707 - 1783)}
+\hspace{1.5cm}
+\href{https://en.wikipedia.org/wiki/Joseph-Louis_Lagrange}{Lagrange (1736-1813)}
+}
+\end{center}
+
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Eulerian frame: fluid viewed/measured in a frame fixed in space ({\it laboratory frame}).  
+\item Lagrangian frame: fluid viewed/measured in a frame fixed on a fluid element ({\it material frame}).
+
+\end{itemize}
+\end{exampleblock}{}
+
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.55\textwidth]{./images/schematics/Euler_and_Lagrange_viewpoints.pdf}}
+\end{center}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Transport by waves and eddies: Stokes Drift}
+
+\begin{center}
+\vspace{-.25cm}
+{\includegraphics[width=\textwidth]{./images/schematics/StokesDrift.pdf}}
+\vspace{-.5cm}
+\center{\scriptsize Surface Stokes drift \hspace{2cm} Layer  thickness
+  transport \hspace{1.6cm} APE release}
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item Stokes identified how waves can move matter: {\it Stokes drift}.
+    \begin{itemize}
+         \item Think of motion just outside the breaking surf-zone.  
+    \end{itemize}
+
+  \item Stokes drift leads to the ``bolus'' transport within buoyancy
+    layers.
+    \begin{itemize}
+    \item Think of how a snake swallows its meal.
+    \end{itemize}
+
+  \item A generalized version of Stokes drift arises as sloping
+    buoyancy surfaces flatten and release potential energy during
+    baroclinic instability.
+
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Kelvin and Helmholz: circulation and vorticity}
+
+\begin{center}
+\vspace{-.3cm}
+\fbox{\includegraphics[width=0.23\textwidth]{./images/people_17-19th_century/Lord_Kelvin_photograph.jpg}}
+\hspace{1cm} 
+{\includegraphics[width=0.25\textwidth]{./images/schematics/vorticity_and_circulation.pdf}}
+\hspace{1cm}
+\fbox{\includegraphics[width=0.21\textwidth]{./images/people_17-19th_century/Hermann_von_Helmholtz.jpg}}
+
+
+
+\vspace{-.3cm}
+\center{\scriptsize 
+\href{https://en.wikipedia.org/wiki/William_Thomson,_1st_Baron_Kelvin}{Kelvin (1824-1907)}
+\hspace{1cm} circulation \&  vorticity
+\hspace{2cm}
+\href{https://en.wikipedia.org/wiki/Hermann_von_Helmholtz}{Helmholtz (1821-1894)}
+}
+
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Circulation is related to vorticity via Stokes' Theorem 
+\begin{equation}
+  C = \ointctrclockwise_{\partial S} {\bm v} \cdot \mathrm{d}{\bm r}   
+ \; \; \; \;  \myeqq \; \; \; \;
+ \int_{S} (\nabla \wedge {\bm v})  \cdot \hat{\bm n} \, \mathrm{d}S 
+= \int_{S} {\bm \omega} \cdot \hat{\bm n} \, \mathrm{d}S.
+\end{equation}
+
+\item Kelvin's Circulation Theorem for inviscid baroclinic flow: 
+\begin{equation}
+  \frac{\mathrm{D}C}{\mathrm{D}t} 
+= \int_{S}  \underbrace{ \rho^{-2} \, ( \nabla \rho \wedge \nabla p ) }_{\mbox{\tiny baroclinicity}} \cdot \hat{\bm n} \, \mathrm{d}S.
+\end{equation}
+ 
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Animation: Kelvin-Helmholz instability leading to turbulent mixing}
+
+\begin{center}
+  \href{https://vimeo.com/187121815}{Computer simulation of
+    Kelvin-Helmholz instability (shear instability)} using code from
+  the Dedalus Project (an open source partial differential equation
+  solver using spectral methods).
+\end{center}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Maxwell and Gibbs: Thermodynamics}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.25\textwidth]{./images/people_17-19th_century/James_Clerk_Maxwell.png}}
+\hspace{1cm}
+\fbox{\includegraphics[width=0.30\textwidth]{./images/schematics/Maxwell's_letters_plate_IV.jpg}}
+\hspace{1cm}
+\fbox{\includegraphics[width=0.22\textwidth]{./images/people_17-19th_century/Josiah_Willard_Gibbs.jpg}}
+
+\vspace{-.3cm}
+\center{\scriptsize 
+\href{https://en.wikipedia.org/wiki/James_Clerk_Maxwell}{Maxwell (1831-1879)}
+\hspace{1cm}  Maxwell: $H_{2}O$ P-V-T phase diagram
+\hspace{1cm}
+\href{https://en.wikipedia.org/wiki/Josiah_Willard_Gibbs}{Gibbs (1839-1903)}
+}
+
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item Thermodynamics provides relations between energy, entropy,
+  enthalpy, heat, work, etc.
+
+\item Developed a geometric view of thermodynamic phase spaces.  
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{McDougall: seawater thermodynamics}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.35\textwidth]{./images/people_20th_century_GFD/Trevor-McDougall.jpg}}
+\hspace{2cm} 
+\fbox{\includegraphics[width=0.32\textwidth]{./images/schematics/helicalA.pdf}}
+
+\vspace{-.3cm}
+\center{\scriptsize 
+\href{https://en.wikipedia.org/wiki/Trevor_McDougall}{McDougall (UNSW professor)}
+\hspace{3cm} Neutral helicity
+}
+
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Applications of thermodynamics to seawater were surprisingly
+  simplistic until the seminal work of McDougall and colleagues during
+  20th and 21st centuries.
+
+\item Pioneered studies into the geometry and topology of seawater
+  thermodynamics and ocean mixing.
+
+\end{itemize}
+\end{exampleblock}{}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Bjerknes, Rossby, Charney: \\ geophysical fluid mechanics}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.15\textwidth]{./images/people_20th_century_GFD/Vilhelm_Bjerknes_Bust_01.jpg}}
+\hspace{1cm} 
+\fbox{\includegraphics[width=0.15\textwidth]{./images/people_20th_century_GFD/Carl-Gustav-Rossby.jpg}}
+\hspace{1cm} 
+\fbox{\includegraphics[width=0.3\textwidth]{./images/people_20th_century_GFD/Charney2_0.jpg}}
+
+\vspace{-.3cm}
+\center{\scriptsize 
+\hspace{-.4cm}
+\href{https://en.wikipedia.org/wiki/Vilhelm_Bjerknes}{Bjerknes (1862-1951)}
+\hspace{.3cm}
+\href{https://en.wikipedia.org/wiki/Carl-Gustaf_Rossby}{Rossby (1898-1957)}
+\hspace{1cm}
+\href{https://en.wikipedia.org/wiki/Jule_Gregory_Charney}{Charney (1917-1981)}
+}
+
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Bjerknes: atmospheric motion can be described using laws of
+  thermodynamics + fluid mechanics.
+
+\item Rossby: wave patterns seen on weather maps arise from
+  latitudinal dependence of the Coriolis force found on a spherical
+  planet: {\it Rossby waves}.
+
+\item Charney (also Eady): {\it baroclinic instability} = hydrodynamic
+  instability feeding off available potential energy of a rotating
+  stratified fluid: space-time scale for weather patterns; ocean
+  eddies; macro-turbulence.  
+
+
+\end{itemize}
+\end{exampleblock}{}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Ocean mechanics = thermo-fluid mechanics on a rotating
+    \& gravitating sphere}
+
+\begin{center}
+\vspace{-.25cm}
+{\includegraphics[width=0.35\textwidth]{./images/schematics/rotating_sphere.pdf}}
+\end{center}
+
+
+\footnotesize 
+\begin{align}
+  \frac{\mathrm{D} {\bm v}  }{\mathrm{D}t} 
+  + 2  \, {\bm \Omega} \wedge {\bm v} &= 
+  - g \, \hat{\bm z} -\rho^{-1} \,  \nabla p + {\bm F}
+ & \mbox{momentum (dynamics)}  
+\label{eq:gfd-fluid-equation-of-motion-summary} 
+  \\
+  \frac{\mathrm{D}\rho}{\mathrm{D}t} &= -\rho \, \nabla \cdot {\bm v}
+ &  \mbox{continuity (kinematics)}  
+\label{eq:gfd-fluid-mass-equation-summary} 
+  \\
+ \rho \, \frac{\mathrm{D}\theta}{\mathrm{D}t}
+ &= -\nabla \cdot {\bm J}(\theta)
+ & \mbox{enthalpy (thermodynamics)}
+  \label{eq:gfd-fluid-thermo-equation-summary} 
+  \\
+ \rho \, \frac{\mathrm{D}S}{\mathrm{D}t} 
+ &= -\nabla \cdot {\bm J}(S)
+ & \mbox{salinity (matter)}
+\label{eq:gfd-fluid-matter-equation-summary} 
+ \\
+   \rho &= \rho(S,\theta,p). 
+ & \mbox{equation of state (thermodynamics)}
+\label{eq:eos-summary}   
+\end{align}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{General circulation project}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=1.0\textwidth]{./images/people_20th_century_GFD/20th_century_icons.pdf}}
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Developed numerical methods to turn the continuum partial
+  differential equations into discrete algebraic equations suitable
+  for computer simulations.
+
+\item Developed {\it filtered} equations that target waves and eddying
+  patterns relevant for weather and {\it general circulation}.
+
+\item Exposed the chaotic nature of weather and macro-turbulence (chaos theory). 
+
+\item Computer models provide an experimental tool to study the
+  atmosphere and ocean.
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\section{Emergent patterns and fluctuations}
+
+
+\begin{frame}
+  \frametitle{Animation: fluid dynamics in the Southern Ocean}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.7\textwidth]{./images/pictures/NCRIS-Raijin2-3.jpg}}
+\end{center}
+
+\begin{center}
+Computer model simulation of flow regimes in the Southern Ocean from the
+\href{https://www.youtube.com/watch?v=8VMSF28J9H4}{Australian ACCESS-OM2 0.1 degree ocean/sea-ice model} 
+run on the NCI Raijin supercomputer in Canberra, AUS.
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{There's a zoo of physical ocean processes}
+
+\begin{center}
+\vspace{-.4cm}
+{\includegraphics[width=0.45\textwidth]{./images/schematics/Figure_Malou_June27_exportJPEG.jpg}}
+\end{center}
+\vspace{-.5cm} 
+\center{\scriptsize \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{Groeskamp et al (2019)}}
+
+\vspace{0cm}
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item The ocean is a forced-dissipative system with cascades of energy
+  across space-time scales.
+
+\item Enhanced resolution of observations (e.g., satellite) and
+  simulations generally reveals refined layers of phenomenology.
+   \begin{itemize}
+      \item[$\star$] The more we look, the more we see! 
+   \end{itemize}
+
+\item Direct implications for representation and parameterization of
+  the ocean's role in climate and ecosystems. 
+ 
+\end{itemize}
+\end{exampleblock}{}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Space-time diagram of ocean dynamical processes}
+
+\begin{columns}[c] 
+\column{.5\textwidth} 
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=0.9\textwidth]{../../../../../Documents/OTHERS/USA/OREGON/chelton/research_hotswg_HOTSWG_overview_space_time_schematic.pdf}}
+\center{\scriptsize \href{http://www-po.coas.oregonstate.edu/research/po/research/hotswg/HOTSWG_report.pdf}{Chelton (2001)}}
+\end{center}
+
+\column{.50\textwidth}
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Broad range of space-time scales.
+
+\item Absence of a clear spectral gap a result of nonlinear cascade of
+  turbulent flows across scales. 
+   \begin{itemize}
+      \item[$\star$] There is no desert.  
+   \end{itemize}
+
+\item The absence of a spectral gap introduces some difficult
+   problems to the turbulence closure problem in geophysical flows.
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{columns}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Macro-scale turbulence: mesoscale + submesoscale}
+
+\begin{center}
+\vspace{-.45cm}
+{\includegraphics[width=0.90\textwidth]{./images/eddies/MODIS_and_ROMS_zeta_over_f.pdf}}
+\end{center}
+\vspace{-.6cm} 
+\center{\scriptsize \href{https://oceancolor.gsfc.nasa.gov/gallery/609/}{Phytoplankton bloom from NASA GSFC}
+      \hspace{1cm}  \href{https://journals.ametsoc.org/doi/10.1175/JPO-D-14-0154.1}{Simulation (Gula et al 2015) ($\Delta = 500$m)}}
+
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Satellite measurements reveal the multi-scale structure of ocean
+  macro-turbulence.
+
+\item Simulations allow us to study the mechanisms.
+   \begin{itemize}
+   \item[$\star$] Primary eddy features (``mesoscale eddies'')
+     initiate secondary ``submesocale instabilities'' that lead to
+     filaments along the edges of the eddies.
+   \item[$\star$] Submesoscale eddies and fronts have strong vertical
+     motions that bring deep nutrients into the upper photic (light)
+     zone.
+   \end{itemize}
+
+\end{itemize}
+\end{exampleblock}{}
+
+                           
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Coherent structures + turbulent soup = order in chaos}
+
+\begin{center}
+\vspace{-.3cm}
+{\includegraphics[width=0.4\textwidth]{./images/eddies/Kuroshio_LAVD.pdf}}
+\hspace{1cm}
+{\includegraphics[width=0.4\textwidth]{./images/eddies/SouthernOceanSpeed.pdf}}
+\vspace{-.3cm}
+\center{\scriptsize 
+       \href{https://www.sciencedirect.com/science/article/pii/S1463500318302348}{LAVD field from Tarshish et al (2018)}
+      \hspace{1cm} Surface current speed (courtesy A. Morrison, ANU) }
+
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item We see coherent structures within a background turbulent soup. 
+\begin{itemize}
+\item[$\star$] Quasi-geostrophic turbulence cascades energy to large
+  scale.
+\item[$\star$] In some regions the cascade focuses on coherent
+  structures: \\  \href{https://vimeo.com/213705279}{Cascade animation from R. Abernathey, Columbia Univ.}
+\item[$\star$] Maximize information entropy while conserving energy.
+
+\end{itemize} 
+
+ \item Non-autonomous dynamical systems methods to objectively
+   identify coherent structures and measure impacts on transport.
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\section{Climate change and sea level}
+
+
+\begin{frame}
+  \frametitle{Earth is warming due to fossil fuel burning (IPCC)}
+
+\begin{center}
+\vspace{-.25cm}
+{\includegraphics[width=1\textwidth]{./images/climate/global_warming.pdf}}
+\vspace{-.75cm}
+\center{\scriptsize \href{https://climate.nasa.gov/vital-signs/global-temperature/}{NASA analysis}}
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item Consistent pattern of global and regional warming of surface temperatures. 
+\item Each season is warming.
+\item Northern high latitudes are warming the most, reflecting
+  ice-albedo feedback as a result of melting Arctic sea-ice.
+\item North Atlantic cooling might reflect slow-down of Atlantic
+  overturning circulation.
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Global warming = ocean warming $\Rightarrow$ sea level rises}
+
+\begin{center}
+\vspace{-.25cm}
+{\includegraphics[width=.77\textwidth]{./images/climate/sealevel_and_ocean_warming.pdf}}
+\vspace{-0.5cm}
+\center{\scriptsize \href{https://ar5-syr.ipcc.ch/topic_observedchanges.php}{IPCC AR5}
+\hspace{2cm} 
+ \href{https://climate.nasa.gov/vital-signs/global-temperature/}{NASA analysis}
+\hspace{1cm} 
+ Sea level scientists}
+\end{center}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item Ocean warming raises sea level (thermosteric + land ice melt)
+\item Regional patterns associated with ocean dynamical processes:
+  winds, regional heating, changes to circulation.
+\item Since 1970, ocean is heating at a rate equivalent to the power
+  released by roughly 3 to 6 Hiroshima bombs per second.
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Winds, waves, and warming Antarctic ice shelves}
+
+
+\begin{center}
+\vspace{-.35cm}
+{\includegraphics[width=.7\textwidth]{./images/climate/Antarctic_sealevel_processes.pdf}}
+\vspace{-0.25cm}
+\center{\scriptsize \href{http://science.sciencemag.org/content/348/6232/327}{Paolo et al (2015)}
+\hspace{2cm} 
+ \href{https://www.nature.com/articles/nclimate3335}{Spence et al (2017)}}
+\end{center}
+
+\vspace{-0.25cm}
+\begin{exampleblock}{}
+\begin{itemize}
+\item Complex array of physical processes at the base of ice shelves.  
+\item Broad trends in ice shelf melting over recent 20 years. 
+\item Models and theory suggest that winds and waves can act to alter
+  interior pressure gradients that in certain regions lead to movement
+  of warm off-shore water towards ice shelves.
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Further big questions of ocean climate science}
+
+\begin{center}
+\vspace{-.3cm}
+{\includegraphics[width=0.65\textwidth]{./images/climate/BigClimateQuestions.pdf}}
+\vspace{-0.25cm}
+\center{\scriptsize 
+\href{https://journals.ametsoc.org/doi/10.1175/BAMS-D-11-00151.1}{Srokosz (2012)}
+\hspace{0.5cm} 
+\href{https://www.nature.com/articles/s41586-018-0006-5?WT.feed_name=subjects_climate-and-earth-system-modelling}{Caesar et al (2018)}
+\hspace{0.5cm} 
+\href{https://physicstoday.scitation.org/doi/10.1063/PT.3.2654}{Morrison et al (2015)}
+\hspace{0.5cm} 
+\href{https://www.britannica.com/science/ocean-acidification}{Encyclopaedia Britannica}
+}
+\end{center}
+
+\vspace{-0.25cm}
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Slowdown of Atlantic overturning circulation, with impacts on
+  poleward/vertical heat and carbon transport, European climate, and
+  North American east coast sea level;
+
+\item Southern Ocean ventilation of heat and carbon with possible
+  changes due to changing winds, precipitation, and heating;
+
+\item Ocean heat waves, acidification, and impacts on marine life.
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+
+
+\section{Closing comments}
+
+\begin{frame}
+  \frametitle{Summary}
+
+\begin{exampleblock}{}
+
+\begin{itemize}
+
+\item Ocean circulation emerges from the underlying thermo/mechanical
+  equations for a fluid on a gravitating and rotating sphere.
+
+\item Ocean circulation studies involve a synergy between observations
+  (satellites, ships, floats), theory (maths, physics), and
+  simulations (numerics, computer science).
+
+\item Simulations provide oceanographers with an experimental tool to
+  reveal a mechanistic understanding of the complex multi-scale fluid
+  flow.
+
+\item Civilization is presenting the earth with a (relatively new)
+  geophysical force whose impacts are felt by the ocean and
+  atmosphere: 
+   \begin{itemize}
+   \item[$\star$]  The carbon burning experiment. 
+   \item[$\star$] Humanity does not control climate but we do affect
+     it.
+   \item[$\star$] Unraveling the mechanisms for both natural and
+     anthropogenic fluctuations in the ocean/atmosphere climate system
+     is fundamental to 21st century earth science.
+  \end{itemize}
+ 
+\end{itemize}
+
+
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Some words for the aspiring mathematical scientist}
+
+\begin{exampleblock}{}
+
+\begin{itemize} 
+
+\item[$\star$] {\sc Albert Einstein:} The important thing is not to
+  stop questioning. Curiosity has its own reason for existence.
+
+\item[$\star$] {\sc R. Buckminster Fuller:} You never change things by
+  fighting the existing reality. To change something, build a new
+  model that makes the existing model obsolete.
+
+\item[$\star$] {\sc Gautama Buddha:} Do not believe in anything simply
+  because you have heard it.  Do not believe in anything merely on the
+  authority of your teachers and elders. But after observation and
+  analysis, when you find that anything agrees with reason and is
+  conducive to the good and benefit of one and all, then accept it and
+  live up to it.
+
+
+\item[$\star$] {\sc F. Scott Fitzgerald:} One should be able to see
+  that things are hopeless and yet be determined to make them
+  otherwise.
+
+
+
+\end{itemize}
+
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{A suite of further cutting-edge animations}
+
+\begin{itemize} 
+
+\item[$\star$] 
+\href{https://vimeo.com/dedalus}{Process studies using Dedalus}
+
+\item[$\star$] 
+\href{http://stockage.univ-brest.fr/~gula/movies.html}{Multi-scale flows from J. Gula using ROMS}
+
+\item[$\star$] 
+\href{https://vimeo.com/oceannext}{Atlantic simulations from NEMO at $<2$km grid spacing}
+
+\item[$\star$] 
+\href{https://www.youtube.com/watch?v=CCmTY0PKGDs}{NASA global surface circulation using MITgcm}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Many thanks for your time and attention}
+
+\begin{center}
+ It has been an honour \& pleasure to prepare \& to present this lecture. 
+\vspace{-.25cm}
+\fbox{\includegraphics[width=1.0\textwidth]{./images/pictures/Southern_Ocean_photos.pdf}}
+\end{center}
+\center{\scriptsize Photos from the Weddell Sea and Scotia Sea, autumn 2017 on the RRS Ross}
+
+
+\end{frame}  
+
+
+
+
+
+
+
+\end{document}
+
