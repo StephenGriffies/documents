@@ -452,7 +452,7 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
  -\left[  \nabla_{\sigma} \cdot ( h \, {\bm J}^{h}) +  \delta_{\sigma} J^{\sigma} \right] 
  \\
   &w^{\sigma} =  \frac{\partial z}{\partial \sigma}  \frac{ \mathrm{D} \sigma}{\mathrm{D}t} 
- \qquad {\bm u}^{\dagger}  = {\bm u} + {\bm u}^{\mbox{\tiny bolus}} 
+ \qquad {\bm u}^{\dagger}  = {\bm u} + {\bm u}^{\mbox{\tiny bolus}}  = \mbox{horizontal residual mean velocity.}
 \label{eq:gvc-mass-tracer-equation}
 \end{align}
 
@@ -497,6 +497,13 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
 \href{https://adcroft.github.io/2017/03/01/MOM6-ALE-algorithm.html}{(Based on AJ Adcroft)} }
 
 \vspace{-.3cm} 
+
+
+\begin{center}
+{\includegraphics[width=0.9\textwidth]{./figs/ALE_schematic.pdf}}
+\end{center}
+
+
 \begin{exampleblock}{}
 \begin{itemize}
 
@@ -521,23 +528,62 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
   Use a very high order accurate one-dimensional scheme to minimize
   spurious mixing/unmixing.
 
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Comments about ALE}
 
 \begin{center}
-{\includegraphics[width=0.8\textwidth]{./figs/ALE_schematic.pdf}}
+{\includegraphics[width=0.9\textwidth]{./figs/ALE_schematic.pdf}}
 \end{center}
+
+
+\vspace{-.3cm} 
+\begin{exampleblock}{}
+\begin{itemize}
+
 
 \item {\sc Where is dia-surface advection?}  It is part of the
   evolution of the grid cell thicknesses.  Cell interfaces move and
   carry the state.
+   \begin{itemize}  \footnotesize 
+   \item[$\star$] {\sc z-coordinate example:} Define $h^{*}$ according
+     to fixed z-levels.  Remapping moves the state onto the fixed
+     $z-$grid, a step that is the operationally same as vertical
+     advection.
+   \end{itemize}
 
-\item {\sc z-coordinate example:} Define $h^{*}$ according to fixed
-  z-levels.  Remapping moves the state onto the fixed $z-$grid:
-  operationally same as vertical advection.
+ \item To diagnose the full advection operator, we need to diagnose
+   the contribution from remapping so that
+\begin{equation}
+    \nabla \cdot (\rho \, C \, {\bm v}^{\dagger} ) = \underbrace{ \nabla_{\sigma} \cdot (\rho \, C \, {\bm u}^{\dagger} )}_{\mbox{\tiny horizontal layer advection}}
+  + \; \; \mbox{remapping}.
+\end{equation}
+
+
+\item The vertical remapping algorithm can be used for diagnostic
+  purposes to remap and bin grid cell tendencies according to
+  arbitrary surfaces.
 
 \end{itemize}
 \end{exampleblock}{}
 
 \end{frame}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -569,7 +615,8 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
 \end{equation}
 
 \item[$\star$] Noise term is not physical.  Hence, if it is large it
-  can corrupt the physical integrity of the simulation.  
+  can corrupt the physical integrity of the simulation; e.g.,
+  watermass trends induced through spurious diffusion.
 
 \item[$\star$] Noise term can become larger when refine grid spacing
   to partially resolve mesoscale eddies, which pump tracer variance to
@@ -577,6 +624,9 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
   before spurious mixing reduces:
   $0.25^{\circ} \longrightarrow 0.1^{\circ}$.
 
+\item[$\star$] Noise is reduced when use higher order accurate
+  advection and when move to ALE vertical remapping (with high order
+  accurate remapping). 
 
 \item[$\star$] After 20 years of trying, there is no exact and general
   means to locally diagnose
@@ -584,10 +634,6 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
       noise}}$
   in a realistic ocean climate simulation.  However, there are ideas
   that might get us part of the way there (e.g., Ryan Holmes).
-
-\item[$\star$] Noise is reduced when use higher order accurate
-  advection and when move to ALE vertical remapping (with high order
-  accurate remapping). 
 
 \end{itemize}
 \end{exampleblock}{}
@@ -597,7 +643,7 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
 
 
 \begin{frame}
-  \frametitle{Ambiguity and noise in the binning process}
+  \frametitle{Ambiguity with the binning process}
 
   The discrete water mass transformation expression is given by
 \begin{equation}
@@ -616,7 +662,9 @@ G(\lambda)
 \begin{itemize}
 \item What bin size should we use?  
    \begin{itemize} \footnotesize 
-   \item[$\star$] Bin size can have a nontrivial impact on the results.
+   \item[$\star$] In many cases, bin size can have a nontrivial impact on the results.
+   \item[$\star$] Is that because we are using poor numerics?  
+   \item[$\star$] Perhaps ALE remapping will help? 
 \end{itemize}
 
 \item It is useful for debugging the binning code to check that the
@@ -628,11 +676,16 @@ G(\lambda)
      \begin{itemize}\footnotesize
      \item[$\star$] We are aiming for quantitatively robust
        results, and yet there is no direct means to double-check
-       the numbers.  That is a problem. 
+       the numbers. 
+     \item[$\star$] Given sentivities to numerical choices (binning
+       algorithm, binning classes), the lack of a double-check is a
+       real problem.
+     \item[$\star$] The analogous issue does {\it not} arise with
+       native-grid budget analyses, since we can check ``left hand
+       side = right hand side'' at each grid cell.  
     \end{itemize}
 
-  \item Are we ready for a detailed best-practices for WMT analysis,
-    at least to help minimize obvious mistakes?
+  \item Should we consider a detailed best-practices guide for WMT analysis?
 
 \end{itemize}
 \end{exampleblock}{}
@@ -643,7 +696,7 @@ G(\lambda)
 
 
 \begin{frame}
-  \frametitle{A final solution for best globally defined buoyancy?}
+  \frametitle{Best globally defined buoyancy?}
 
   For buoyancy-based WMT analysis, we remain using non-optimal density
   fields such as $\gamma^{\mbox{\tiny n}}$ or potential density.
@@ -651,46 +704,59 @@ G(\lambda)
 \begin{exampleblock}{}
 \begin{itemize}
 
-\item Aspirations for any new-and-improved $\gamma$ field.
+\item A wish-list for a new-and-improved $\gamma$ field.
 
 
 \begin{itemize}  \footnotesize 
-\item[$\star$] An equation for $\gamma$ to allow online binning.
+\item[$\star$] A state-dependent equation for $\gamma$ to allow online
+  binning.
 
 \item[$\star$] An expression for $\gamma$ that is general enough to
-  allow for arbitrary model state; not limited to an observational
-  dataset.
+  allow for arbitrary model state.
 
-\item[$\star$] Dispense with the dreaded
-  $b-$factor in the following relation from
-  \href{https://doi.org/10.1357/0022240053693734}{McDougall and
+\item[$\star$] No connection to observational data so that there is no
+  geographical dependence.
+
+\item[$\star$] Accurate enough so that the material changes in
+  $\gamma$ are very close to those of locally referenced potential
+  density. 
+
+\item[$\star$] Stated alternatively, we wish to have the $b-$factor
+  from \href{https://doi.org/10.1357/0022240053693734}{McDougall and
     Jackett (2005)} and
   \href{https://journals.ametsoc.org/doi/10.1175/2007JPO3464.1}{Iudicone
-    et al (2008)}
+    et al (2008)} near unity everywhere
 \begin{equation}
    \frac{\dot{\gamma}}{\gamma} = b \, \frac{\dot{\rho}^{\mbox{\tiny local}}}{\rho^{\mbox{\tiny local}} }
    = b \, (-\alpha \, \dot{\Theta} + \beta \, \dot{S})  
   \qquad b = \frac{ | \nabla \gamma| }{ | \nabla \rho^{\mbox{\tiny local}} | } 
-  \approx 1 ?? 
+  \approx 1.
 \end{equation}
 
 \end{itemize}
 
-\item Jeff Stanley's ongoing work with Trevor to generalize the
+\item Geoff Stanley's ongoing work with Trevor to generalize the
   \href{https://www.ocean-sci.net/5/155/2009/}{Klocker and McDougall
     (2009)} $\omega$-surfaces holds some promise.
 
 \end{itemize}
 \end{exampleblock}{}
 
-
-
-
-
 \end{frame}
 
 
 
+\begin{frame}
+\frametitle{Many thanks for your time and attention}
+
+\begin{center}
+\vspace{-.25cm}
+\fbox{\includegraphics[width=1.0\textwidth]{../../../../Griffies/talks_meetings/2019/Australia_AMSI_lecture/talk/images/pictures/Southern_Ocean_photos.pdf}}
+\end{center}
+\center{\scriptsize From the Weddell Sea and Scotia Sea, autumn 2017 on the RRS James Clark Ross}
+
+
+\end{frame}  
 
 
 
