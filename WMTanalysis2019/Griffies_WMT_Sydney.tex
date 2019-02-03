@@ -465,8 +465,8 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
   mixing: a {\it thermodynamic} or {\it process} approach.
 
 \item Makes use of ${\bm u}^{\mbox{\tiny bolus}}$ to ensure advective
-  transport retains constant mass layers, even if not an adiabatic
-  isopycnal layer. 
+  transport retains layer integrated constant mass, even if not an
+  adiabatic isopycnal layer.
  \begin{itemize}
  \item[$\star$] \scriptsize A choice stemming from isopycnal models,
    here chosen also for any coordinate.
@@ -509,8 +509,8 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
 
 \item {\sc Immiscible layer step:} Using the quasi-Lagrangian
   formulation, evolve ocean state to time $t + \Delta t$ using
-  $\dot{\sigma} = 0$ (constant mass layers) yet with the full suite of
-  SGS parameterizations
+  $\dot{\sigma} = 0$ (so integrated mass is constant in each layer)
+  yet with the full suite of SGS parameterizations
 \begin{equation*}
 \frac{\partial (h \, \rho)}{\partial  t} + \nabla_{\sigma} \cdot (h \, \rho \, {\bm u}^{\dagger} ) = 0 
 \qquad 
@@ -565,6 +565,8 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
   + \; \; \mbox{remapping}.
 \end{equation}
 
+\item There is no CFL associated with vertical remapping; useful for
+  fine vertical grid spacing.
 
 \item The vertical remapping algorithm can be used for diagnostic
   purposes to remap and bin grid cell tendencies according to
@@ -616,7 +618,7 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
 
 \item[$\star$] Noise term is not physical.  Hence, if it is large it
   can corrupt the physical integrity of the simulation; e.g.,
-  watermass trends induced through spurious diffusion.
+  spurious watermass trends can be induced.
 
 \item[$\star$] Noise term can become larger when refine grid spacing
   to partially resolve mesoscale eddies, which pump tracer variance to
@@ -712,10 +714,10 @@ G(\lambda)
   binning.
 
 \item[$\star$] An expression for $\gamma$ that is general enough to
-  allow for arbitrary model state.
+  allow for arbitrary model state: paleoclimate and climate change.
 
-\item[$\star$] No connection to observational data so that there is no
-  geographical dependence.
+\item[$\star$] No direct connection to observational data so that
+  there is no geographical dependence.
 
 \item[$\star$] Accurate enough so that the material changes in
   $\gamma$ are very close to those of locally referenced potential
