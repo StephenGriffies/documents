@@ -1,0 +1,700 @@
+%LATEX 
+%\documentclass[10pt,draft]{beamer}
+\documentclass[10pt]{beamer}
+\usepackage{beamerthemesplit} % new 
+
+
+\usepackage{bm,amsmath,amssymb}
+\usepackage{mathtools,slashed,esint}
+
+\usepackage{animate}
+
+
+\usepackage{pgf}
+\usepackage{wasysym}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{wasysym}
+\usepackage{centernot}
+
+\usepackage{tikz}
+\usepackage{pgf}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+%\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{media9}
+\usepackage{natbib}
+\usepackage{color}
+
+%\usepackage{../../../../../Documents/TEX/styles/mystyle_beamer}
+
+\usepackage{ragged2e}
+\usepackage{etoolbox}
+\usepackage{lipsum}
+
+\apptocmd{\frame}{\justifying}{}{}
+
+\usepackage{hyperref}  % must be used last in the list of packages 
+
+\hypersetup{colorlinks=true,linkcolor=green,citecolor=green,filecolor=green,urlcolor=green} 
+
+
+\setlength\fboxsep{0pt}
+\setlength\fboxrule{0.5pt}
+
+\newcommand\myeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily M constant}}}{=}}}
+\newcommand\myeqq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily Stokes Thm}}}{=}}}
+
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+\newcommand{\Simley}[1]{%
+\begin{tikzpicture}[scale=0.11]
+    \newcommand*{\SmileyRadius}{1.0}%
+    \draw [fill=brown!10] (0,0) circle (\SmileyRadius)% outside circle
+        %node [yshift=-0.22*\SmileyRadius cm] {\tiny #1}% uncomment this to see the smile factor
+        ;  
+
+    \pgfmathsetmacro{\eyeX}{0.5*\SmileyRadius*cos(30)}
+    \pgfmathsetmacro{\eyeY}{0.5*\SmileyRadius*sin(30)}
+    \draw [fill=cyan,draw=none] (\eyeX,\eyeY) circle (0.15cm);
+    \draw [fill=cyan,draw=none] (-\eyeX,\eyeY) circle (0.15cm);
+
+    \pgfmathsetmacro{\xScale}{2*\eyeX/180}
+    \pgfmathsetmacro{\yScale}{1.0*\eyeY}
+    \draw[color=red, domain=-\eyeX:\eyeX]   
+        plot ({\x},{
+            -0.1+#1*0.15 % shift the smiley as smile decreases
+            -#1*1.75*\yScale*(sin((\x+\eyeX)/\xScale))-\eyeY});
+\end{tikzpicture}%
+}%
+
+
+
+% beamer prologue begins here
+\mode<presentation>
+{                               % see user guide for choices
+  \usetheme{Frankfurt}
+%  \usetheme{Madrid}
+%  \usecolortheme{seahorse}
+%  \usecolortheme[RGB={205,173,0}]{structure} 
+  \usecolortheme[RGB={0,100,180}]{structure} 
+  \usefonttheme[onlymath]{serif}
+  \setbeamercovered{transparent} % or whatever (possibly just delete it)
+}
+
+% drop those navigation symbols at bottom right
+%\setbeamertemplate{navigation symbols}{} 
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+
+\title[WMT and numerical models]{WMT analysis in ocean models: \\ some
+  thoughts and questions} % (optional)
+
+\subtitle{ {\it Watermass Transformation Meeting 2019} \\
+  4-6  Feb 2019 \\ \vspace{.25cm}
+  University of New South Wales \\
+ Sydney, Australia  \\ Traditional lands of the Bedegal people of the Eora Nation
+%\vspace{.25cm}
+%\fbox{\includegraphics[width=.3\textwidth]{../../../../../Griffies/lectures/India_2013/griffies/figs/cm2p6.png}}
+}
+
+\author[{\sc Stephen.M.Griffies@gmail.com}] % short form for footer, use if many authors
+{ {\sc Stephen.Griffies@noaa.gov  \\ SMG@Princeton.edu \\  Stephen.M.Griffies@gmail.com 
+} 
+}
+% - Use the \inst{?} command only if the authors have different 
+%   affiliation. 
+
+
+
+\institute[NOAA/GFDL + Princeton University]{NOAA/GFDL + Princeton University} 
+
+%\date{\today}
+\date{}
+
+
+%\logo{\includegraphics[height=5mm]{../../../../../Documents/images/PrincetonLogo.png}} 
+\logo{\includegraphics[height=5mm]{../../../../Documents/images/noaa-logo.png}} 
+
+\subject{Talks} % for "PDF information catalog", can be left out. 
+
+% this shows the outline at the beginning of every section,
+% highlighting the current section
+ \AtBeginSection[]
+ {
+   \begin{frame}
+     \frametitle{Outline}
+ \tableofcontents[ 
+ currentsubsection, 
+ hideothersubsections, 
+ sectionstyle=show/hide, 
+ subsectionstyle=show/hide, 
+ ] 
+   \end{frame}
+ }
+
+
+\setlength{\unitlength}{1mm}  % used in picture environment
+
+\begin{document}
+\footnotesize 
+
+  
+% beamer makes the titlepage from info above: author, date, title, etc.
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Goals for this talk}
+
+\begin{itemize}
+
+\item[$\star$] {\sc conceptual and practical}: Aspects of WMT analysis that
+  impacts our ability to use the method in numerical models
+  \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{(largely
+    from Groeskamp et al 2019).}
+
+\item [$\star$]  {\sc model algorithms and budgets}: How do models evolve
+  tracers?  
+\begin{itemize} \footnotesize 
+\item[] $\longrightarrow$ A bit on quasi-Eulerian (traditional) and
+  quasi-Lagrangian (and ALE) methods.
+    \end{itemize}
+
+\item[$\star$] {\sc Take-home point}: To write rigorous and thorough
+  code for 3d process-based WMT analysis requires expertise in WMT
+  analysis, process physics and BGC, and numerical algorithms.
+    \begin{itemize} \footnotesize 
+       \item[] $\longrightarrow$ It is for us to determine if the investment has sufficient payoff. 
+    \end{itemize}
+
+
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+% beamer makes the ToC from sections and subsections below...
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+
+
+
+
+\section{The WMT elevator speech}
+
+
+\begin{frame}
+  \frametitle{Basic mathematical expressions
+\small \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{(Groeskamp et al 2019)}
+}
+
+{\sc Measure seawater transport across iso-surfaces of a scalar property.}  
+
+\begin{center}
+\vspace{-.1cm}
+{\includegraphics[width=0.4\textwidth]{./figs/Groeskamp_etal_fig3.pdf}}
+\end{center}
+\vspace{-.5cm}
+
+
+\begin{equation}
+G(\lambda) = \iint\limits_{\lambda} \rho \, u^{\mbox{\tiny dia}} \, \mathrm{d}A = 
+\iint\limits_{\lambda} \frac{\rho \, \dot{\lambda} \, \mathrm{d}A}{|\nabla \lambda|}
+\label{eq:wmt-defined-math}
+\end{equation}
+ Fundamental theorem of calculus renders the more useful form 
+\begin{equation}
+G(\lambda) = 
+\frac{\partial}{\partial \lambda}
+\iiint\limits_{\lambda' \le \lambda}
+\rho \, \dot{\lambda}' \, \mathrm{d}V.
+\label{eq:wmt-identity-math}
+\end{equation}
+Discretized form for numerical calculations 
+\begin{equation}
+G(\lambda) 
+\approx 
+\underbrace{
+  \frac{1}{\Delta \lambda} \sum_{n=1}^{N} \sum_{i,j,k}
+  \Pi(\lambda_{n},\lambda,\Delta \lambda)
+  \, (\rho \, \dot{\lambda})_{i,j,k} \, V_{i,j,k}.
+}_{\mbox{\tiny Box-car binning of the material change $\rho \dot{\lambda}$  into $N$-bins}}
+\label{eq:wmt-discrete-math}
+\end{equation}
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Notable conceptual characteristics
+\small \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{(Groeskamp et al 2019)}
+}
+
+\begin{center}
+\vspace{-.1cm}
+{\includegraphics[width=0.45\textwidth]{./figs/Groeskamp_etal_fig3.pdf}}
+\end{center}
+\vspace{-.3cm}
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item  A powerful kinematic framework for studying tracer dynamics. 
+ \begin{itemize}
+ \footnotesize 
+   \item[$\star$] $\lambda$ surfaces can be non-monotonic and disconnected.
+   \item[$\star$] $\lambda$ is typically density (which one?), temperature, or salinity. 
+   \item[$\star$] Geographical non-locality $\Longrightarrow$ distinct from strict isopycnal analysis.
+   \item[$\star$] Generalizable to $\Theta-S$ space ({D\"{o}\"{o}s},
+     Zika, Groeskamp, collaborators).
+   \item[$\star$] Generalizable to arbitrary 3-scalar space (Nurser,
+     Zika, Griffies ongoing).
+ \end{itemize}
+
+\item Geographical non-locality means WMT phase space is {\it not}
+  suitable for spatially local contact forces such as pressure and
+  stress.
+%\vspace{-.2cm}
+\begin{itemize}
+ \footnotesize 
+\item[$\star$] $\Longrightarrow$ Still need Eulerian or Lagrangian
+  kinematics for momentum dynamics.
+\item[$\star$] $\Longrightarrow$ Perfect-fluid dynamical processes
+  ($\dot{\lambda} = 0$) are invisible to WMT.
+\end{itemize}
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\section{What we need from the models}
+
+\begin{frame}
+  \frametitle{Budget analysis}
+
+\begin{center}
+\color{red}
+Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}.$ 
+\color{black}
+\end{center}
+
+
+\begin{itemize}
+
+\item {\sc kinematic method}: Direct calculation but offers no process information 
+\begin{equation}
+  \underbrace{ \rho \, \dot{\lambda} }_{\mbox{\tiny material change}}
+    = \underbrace{ \frac{\partial (\rho \, \lambda)}{\partial t}}_{\mbox{\tiny local tendency}}
+    + \underbrace{  \nabla \cdot (\rho \, \lambda \, {\bm v}^{\dagger} ) }_{\mbox{\tiny residual mean advection}}
+ \qquad  \mbox{with}  \qquad {\bm v}^{\dagger} = {\bm v} + {\bm v}^{\mbox{\tiny sgs}}. 
+\end{equation}
+
+
+\item {\sc process method}: Indirect calculation offering full process information
+\begin{equation}
+  \rho \, \dot{\lambda} = -\nabla \cdot {\bm J} = \sum (\mbox{interior processes + boundaries}).
+\end{equation}
+
+\item {\sc some numerical issues that make careful budgets tough}: 
+\begin{itemize}
+\footnotesize 
+
+\item[$\star$] Models generally have changing cell thicknesses, thus
+  requiring care to keep track of cell volume along with tracer
+  evolution (more later).
+
+\item[$\star$] Multi-step time stepping means ocean is incrementally
+  updated; e.g., time-implicit vertical diffusion $\Longrightarrow$
+  tough to diagnostically close budgets.
+
+\item[$\star$] Numerial algorithms often preclude fine-scale
+  decomposition of budgets; e.g., nonlinear numerical advection
+\begin{equation}
+   {\bm v}^{\dagger} = {\bm v} + {\bm v}^{\mbox{\tiny sgs}}   \; \; \;  \mbox{and yet} \; \; \; 
+  \nabla \cdot ( \rho \, C \, {\bm v}^{\dagger}) \ne \nabla \cdot ( \rho \, C \, {\bm v}) + \nabla \cdot ( \rho \, C \, {\bm v}^{\mbox{\tiny sgs}}  ). 
+\end{equation}
+ 
+
+\end{itemize}
+
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+\section{Scalar equations in ocean models}
+
+\begin{frame}
+  \frametitle{Z-coordinate scalar eqns w/ eddy-induced ${\bm v}^{*}$}
+
+\begin{center}
+\vspace{-.3cm}
+{\includegraphics[width=0.4\textwidth]{./figs/z_layer.pdf}}
+\end{center}
+\vspace{-.5cm}
+
+\begin{align}
+ &\frac{\mathrm{D}^{\dagger}}{\mathrm{D}t} = \frac{\partial }{\partial t} + {\bm v}^{\dagger} \cdot \nabla, 
+ \; \; {\bm v}^{\dagger} = {\bm v} + {\bm v}^{*}  \; \; 
+ \mbox{w/ local mass conserve eddy}  \Longrightarrow   \nabla \cdot (\rho \, {\bm v}^{*}) = 0 
+\\
+ &\frac{\mathrm{D}^{\dagger} ( \rho \, \delta V)}{\mathrm{D}t} = 0  \Longrightarrow  
+   \frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \, {\bm v}) = 0  
+ \; \;  \mbox{usual continuity equation even with ${\bm v}^{*} \ne 0$}
+\\
+  &\rho \, \frac{\mathrm{D}^{\dagger} C }{\mathrm{D}t} = -\nabla \cdot {\bm J}  \Longrightarrow  
+   \frac{\partial (\rho \, C) }{\partial t} + \nabla \cdot (\rho \, C \, {\bm v}^{\dagger} ) = - \nabla \cdot {\bm J}.
+\label{eq:z-coordinate-mass-tracer-equation}
+\end{align}
+
+
+\vspace{-.3cm}
+\begin{exampleblock}{}
+\begin{itemize}
+\item Some tracers, especially BGC tracers, also have sources.  Ignore here for brevity.  
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Quasi-Eulerian scalar eqns w/ eddy-induced ${\bm v}^{*}$}
+
+\begin{center}
+\vspace{-.3cm}
+{\includegraphics[width=0.45\textwidth]{./figs/gvc_layer_eddy_induced.pdf}}
+\end{center}
+\vspace{-.5cm}
+
+\begin{align}
+  &\frac{\partial (h \, \rho)}{\partial  t} + \nabla_{\sigma} \cdot (h \, \rho \, {\bm u}^{\dagger} ) 
+ + \delta_{\sigma} (\rho \, w^{\dagger \sigma} ) 
+ = 0 
+ \; \; \mbox{and} \; \; \nabla_{\sigma} \cdot ( h \, \rho \, {\bm u}^{*})  + \delta_{\sigma} (\rho \, w^{*\sigma} ) = 0 
+\\
+  &\frac{\partial (h \, \rho \, C)}{\partial  t} + \nabla_{\sigma} \cdot (h \, \rho \, C \, {\bm u}^{\dagger} ) 
+ + \delta_{\sigma} (\rho \, C \, w^{\dagger \sigma} ) 
+ =
+ -\left[  \nabla_{\sigma} \cdot ( h \, {\bm J}^{h}) +  \delta_{\sigma} J^{\sigma} \right] 
+ \\
+  &z_{\sigma} = \frac{\partial z}{\partial \sigma} 
+  \qquad h = z_{\sigma} \, \mathrm{d}\sigma 
+  \qquad w^{\dagger \sigma} =  \frac{\partial z}{\partial \sigma}  \frac{ \mathrm{D}^{\dagger} \sigma}{\mathrm{D}t} 
+  = w^{\sigma} + {\bm v}^{*}\cdot z_{\sigma} \nabla \sigma = w^{\sigma}  + w^{*\sigma} 
+ \\
+ &\delta_{\sigma} = \mathrm{d}\sigma \, \frac{\partial}{\partial \sigma}
+ \qquad \nabla_{\sigma} = \nabla_{z} + {\bm S} \, \partial_{z}
+ \qquad {\bm S}  = \nabla_{\sigma} z = -z_{\sigma}  \nabla_{z}\sigma
+ \qquad J^{\sigma}  = z_{\sigma}  \nabla \sigma  \cdot {\bm J} 
+\label{eq:gvc-mass-tracer-equation}
+\end{align}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item Coordinate transformation of the z-coordinate equations (e.g., Griffies 2004).  
+\item $w^{\sigma}$ \& $w^{*\sigma} $ are diagnosed via the continuity
+  equation: a {\it kinematic} approach.
+\item Quasi-Eulerian codes: MOM5, MITgcm, NEMO, ROMS.
+\item Example coordinates are those that do not vanish (unless lose
+  ocean to rock)  $\Longrightarrow$ isopycnal coordinates are not available. 
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Quasi-Lagrangian scalar eqns w/ eddy-induced ${\bm u}^{\mbox{\tiny bolus}}$}
+
+\begin{center}
+\vspace{-.3cm}
+{\includegraphics[width=0.5\textwidth]{./figs/gvc_layer_bolus.pdf}}
+\end{center}
+\vspace{-.5cm}
+
+\begin{align}
+  &\frac{\partial (h \, \rho)}{\partial  t} + \nabla_{\sigma} \cdot (h \, \rho \, {\bm u}^{\dagger} ) 
+ + \delta_{\sigma} (\rho \, w^{\sigma} ) 
+ = 0 
+ \\
+  &\frac{\partial (h \, \rho \, C)}{\partial  t} + \nabla_{\sigma} \cdot (h \, \rho \, C \, {\bm u}^{\dagger} ) 
+ + \delta_{\sigma} (\rho \, C \, w^{\sigma} ) 
+ =
+ -\left[  \nabla_{\sigma} \cdot ( h \, {\bm J}^{h}) +  \delta_{\sigma} J^{\sigma} \right] 
+ \\
+  &w^{\sigma} =  \frac{\partial z}{\partial \sigma}  \frac{ \mathrm{D} \sigma}{\mathrm{D}t} 
+ \qquad {\bm u}^{\dagger}  = {\bm u} + {\bm u}^{\mbox{\tiny bolus}} 
+\label{eq:gvc-mass-tracer-equation}
+\end{align}
+
+
+\vspace{-.2cm} 
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item $w^{\sigma}$ is specified based on dia-surface processes such as
+  mixing: a {\it thermodynamic} or {\it process} approach.
+
+\item Makes use of ${\bm u}^{\mbox{\tiny bolus}}$ to ensure advective
+  transport retains constant mass layers, even if not an adiabatic
+  isopycnal layer. 
+ \begin{itemize}
+ \item[$\star$] \scriptsize A choice stemming from isopycnal models,
+   here chosen also for any coordinate.
+ \item[$\star$] See
+   \href{https://doi.org/10.1175/1520-0485(2001)031<1222:TTRMVP>2.0.CO;2}{McDougall
+     and McIntosh (2001)},
+   \href{https://press.princeton.edu/titles/7797.html}{Griffies
+     (2004),}
+   \href{https://journals.ametsoc.org/doi/full/10.1175/JPO-D-11-0102.1}{Young
+     (2012)} for relation between ${\bm u}^{\mbox{\tiny bolus}}$ and
+   ${\bm v}^{*}$.
+\end{itemize}
+
+\item Quasi-Lagrangian codes: HYCOM, MOM6, MPAS-O, NEMO (immature?).
+
+%\item Can readily handle vanishing layers (wetting and drying).
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Arbitrary Lagrangian Eulerian (ALE) method for the scalar equations \small  
+\href{https://adcroft.github.io/2017/03/01/MOM6-ALE-algorithm.html}{(Based on AJ Adcroft)} }
+
+\vspace{-.3cm} 
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item {\sc Immiscible layer step:} Using the quasi-Lagrangian
+  formulation, evolve ocean state to time $t + \Delta t$ using
+  $\dot{\sigma} = 0$ (constant mass layers) yet with the full suite of
+  SGS parameterizations
+\begin{equation*}
+\frac{\partial (h \, \rho)}{\partial  t} + \nabla_{\sigma} \cdot (h \, \rho \, {\bm u}^{\dagger} ) = 0 
+\qquad 
+ \frac{\partial (h \, \rho \, C)}{\partial  t} + \nabla_{\sigma} \cdot (h \, \rho \, C \, {\bm u}^{\dagger} ) 
+ =
+ -\left[  \nabla_{\sigma} \cdot ( h \, {\bm J}^{h}) +  \delta_{\sigma} J^{\sigma} \right]. 
+\label{eq:gvc-mass-tracer-equation-ALE-stepA}
+\end{equation*}
+
+
+\item {\sc Regridding step:} New grid with thicknesses $h^{*}$ fitting
+  in the model domain.
+
+\item {\sc Remapping step:} Take the new state and map it onto $h^*$.
+  Use a very high order accurate one-dimensional scheme to minimize
+  spurious mixing/unmixing.
+
+
+\begin{center}
+{\includegraphics[width=0.8\textwidth]{./figs/ALE_schematic.pdf}}
+\end{center}
+
+\item {\sc Where is dia-surface advection?}  It is part of the
+  evolution of the grid cell thicknesses.  Cell interfaces move and
+  carry the state.
+
+\item {\sc z-coordinate example:} Define $h^{*}$ according to fixed
+  z-levels.  Remapping moves the state onto the fixed $z-$grid:
+  operationally same as vertical advection.
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+
+\section{Ongoing issues}
+
+\begin{frame}
+  \frametitle{Spurious mixing and unmixing}
+
+  The numerical representation of
+  $\mbox{advection} = \nabla \cdot ( \rho \, C \, {\bm v}^{\dagger})$
+  generally introduces spurious mixing and unmixing due to truncation
+  errors
+  \href{https://doi.org/10.1175/1520-0493(2000)128<0538:SDMAWA>2.0.CO;2}{(Griffies
+    et al 2000 and others)}
+\begin{equation}
+   \nabla \cdot ( \rho \, C \, {\bm v}^{\dagger})_{\mbox{\tiny model}} = 
+   \nabla \cdot ( \rho \, C \, {\bm v}^{\dagger})_{\mbox{\tiny exact}} 
+  +
+ \nabla \cdot ( \rho \, C \, {\bm v}^{\dagger})_{\mbox{\tiny noise}}
+\end{equation}
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item[$\star$] Noise in numerical advection can be interpreted as an
+  extra SGS term
+\begin{equation}
+   \frac{\partial (\rho \, \lambda)}{\partial t} + \nabla \cdot (\rho \, \lambda \, {\bm v}^{\dagger} )_{\mbox{\tiny exact}} 
+ = -\nabla \cdot \left[  {\bm J} + (\rho \, \lambda \, {\bm v}^{\dagger} )_{\mbox{\tiny noise}} \right]. 
+\end{equation}
+
+\item[$\star$] Noise term is not physical.  Hence, if it is large it
+  can corrupt the physical integrity of the simulation.  
+
+\item[$\star$] Noise term can become larger when refine grid spacing
+  to partially resolve mesoscale eddies, which pump tracer variance to
+  the grid scale.  Need to move into the very fine spacing regime
+  before spurious mixing reduces:
+  $0.25^{\circ} \longrightarrow 0.1^{\circ}$.
+
+
+\item[$\star$] After 20 years of trying, there is no exact and general
+  means to locally diagnose
+  $\nabla \cdot ( \rho \, C \, {\bm v}^{\dagger})_{\mbox{\tiny
+      noise}}$
+  in a realistic ocean climate simulation.  However, there are ideas
+  that might get us part of the way there (e.g., Ryan Holmes).
+
+\item[$\star$] Noise is reduced when use higher order accurate
+  advection and when move to ALE vertical remapping (with high order
+  accurate remapping). 
+
+\end{itemize}
+\end{exampleblock}{}
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Ambiguity and noise in the binning process}
+
+  The discrete water mass transformation expression is given by
+\begin{equation}
+G(\lambda) 
+\approx 
+\underbrace{
+  \frac{1}{\Delta \lambda} \sum_{n=1}^{N} \sum_{i,j,k}
+  \Pi(\lambda_{n},\lambda,\Delta \lambda)
+  \, (\rho \, \dot{\lambda})_{i,j,k} \, V_{i,j,k}
+}_{\mbox{\tiny Box-car binning of the material change $\rho \dot{\lambda}$  into $N$-bins}}
+\label{eq:wmt-discrete-math}
+\end{equation}
+ with analogous expressions for layer tracer budgets.  
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item What bin size should we use?  
+   \begin{itemize} \footnotesize 
+   \item[$\star$] Bin size can have a nontrivial impact on the results.
+\end{itemize}
+
+\item It is useful for debugging the binning code to check that the
+  depth/layer integrated budget adds up to the native model
+  budget. 
+
+\item Even so, there is no obvious sanity check on WMT
+     within any particular bin.
+     \begin{itemize}\footnotesize
+     \item[$\star$] We are aiming for quantitatively robust
+       results, and yet there is no direct means to double-check
+       the numbers.  That is a problem. 
+    \end{itemize}
+
+  \item Are we ready for a detailed best-practices for WMT analysis,
+    at least to help minimize obvious mistakes?
+
+\end{itemize}
+\end{exampleblock}{}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{A final solution for best globally defined buoyancy?}
+
+  For buoyancy-based WMT analysis, we remain using non-optimal density
+  fields such as $\gamma^{\mbox{\tiny n}}$ or potential density.
+
+\begin{exampleblock}{}
+\begin{itemize}
+
+\item Aspirations for any new-and-improved $\gamma$ field.
+
+
+\begin{itemize}  \footnotesize 
+\item[$\star$] An equation for $\gamma$ to allow online binning.
+
+\item[$\star$] An expression for $\gamma$ that is general enough to
+  allow for arbitrary model state; not limited to an observational
+  dataset.
+
+\item[$\star$] Dispense with the dreaded
+  $b-$factor in the following relation from
+  \href{https://doi.org/10.1357/0022240053693734}{McDougall and
+    Jackett (2005)} and
+  \href{https://journals.ametsoc.org/doi/10.1175/2007JPO3464.1}{Iudicone
+    et al (2008)}
+\begin{equation}
+   \frac{\dot{\gamma}}{\gamma} = b \, \frac{\dot{\rho}^{\mbox{\tiny local}}}{\rho^{\mbox{\tiny local}} }
+   = b \, (-\alpha \, \dot{\Theta} + \beta \, \dot{S})  
+  \qquad b = \frac{ | \nabla \gamma| }{ | \nabla \rho^{\mbox{\tiny local}} | } 
+  \approx 1 ?? 
+\end{equation}
+
+\end{itemize}
+
+\item Jeff Stanley's ongoing work with Trevor to generalize the
+  \href{https://www.ocean-sci.net/5/155/2009/}{Klocker and McDougall
+    (2009)} $\omega$-surfaces holds some promise.
+
+\end{itemize}
+\end{exampleblock}{}
+
+
+
+
+
+\end{frame}
+
+
+
+
+
+
+
+
+\end{document}
+
