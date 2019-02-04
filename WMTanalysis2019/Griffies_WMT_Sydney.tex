@@ -159,7 +159,7 @@
 
 
 \begin{frame}
-  \frametitle{Goals for this talk}
+  \frametitle{Goals and apologies}
 
 \begin{itemize}
 
@@ -182,6 +182,10 @@
        \item[] $\longrightarrow$ It is for us to determine if the investment has sufficient payoff. 
     \end{itemize}
 
+
+  \item[$\star$] {\sc Apologies} for the heaps of maths. \\
+    ``Everything should be made as simple as possible, but not
+    simpler.''  A. Einstein.
 
 \end{itemize}
 
@@ -208,7 +212,12 @@
 \small \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{(Groeskamp et al 2019)}
 }
 
-{\sc Measure seawater transport across iso-surfaces of a scalar property.}  
+{\sc Measure seawater transport across iso-surfaces of a scalar
+  property.}  \scriptsize Assume smooth $\lambda$ surfaces
+$\Longrightarrow$ average over microstructure as per
+\href{https://doi.org/10.1175/1520-0485(1993)023<2254:MFADS>2.0.CO;2}{De
+  Szoeke and Bennett (1993).}  \footnotesize
+
 
 \begin{center}
 \vspace{-.1cm}
@@ -260,7 +269,7 @@ G(\lambda)
 \begin{exampleblock}{}
 \begin{itemize}
 
-\item  A powerful kinematic framework for studying tracer dynamics. 
+\item  Suitable kinematic framework for studying tracer dynamics. 
  \begin{itemize}
  \footnotesize 
    \item[$\star$] $\lambda$ surfaces can be non-monotonic and disconnected.
@@ -288,6 +297,42 @@ G(\lambda)
 \end{exampleblock}{}
 
 \end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Tutorial on dia-surface transport \href{https://press.princeton.edu/titles/7797.html}{\small (Section 6.7 of Griffies 2004)}}
+
+\vspace{-.2cm} 
+\begin{center}
+{\includegraphics[width=0.5\textwidth]{./figs/dia_surface_schematic.pdf}}
+\end{center}
+
+In
+\href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{Groeskamp
+  et al (2019),} we define the dia-surface velocity component,
+$u^{\mbox{\tiny dia}}$, according to the volume of seawater
+transported across a moving surface
+\begin{align}
+ &{\cal T} \equiv u^{\mbox{\tiny dia}}  \, \mathrm{d}S  \equiv \hat{\bm n} \cdot ({\bm v} - {\bm v}^{(\lambda)})  \, \mathrm{d}S
+  \\
+&\hat{\bm n} = \frac{\nabla \lambda}{|\nabla \lambda|}    = \; \; \mbox{surface outward normal direction} 
+ \\
+&{\bm v}  = \mbox{fluid parcel velocity}   \qquad \mbox{and} \qquad 
+   \frac{\partial \lambda}{\partial t} +   {\bm v}^{(\lambda)} \cdot \nabla \lambda = 0.
+\end{align}
+ Following from these definitions we have 
+\begin{align}
+  \frac{\mathrm{D}\lambda}{\mathrm{D}t} 
+  &= \frac{\partial \lambda}{\partial t} + {\bm v} \cdot \nabla \lambda 
+ = \frac{\partial \lambda}{\partial t} + {\bm v}^{(\lambda)} \cdot \nabla \lambda  + ({\bm v} - {\bm v}^{(\lambda)}) \cdot \nabla \lambda 
+= 0 + u^{\mbox{\tiny dia}} \, |\nabla \lambda| 
+\\
+ &\Longrightarrow u^{\mbox{\tiny dia}}  = \frac{1}{|\nabla \lambda|} \, \frac{\mathrm{D}\lambda}{\mathrm{D}t}  = \frac{\dot{\lambda}}{|\nabla \lambda|}.
+\end{align}
+
+\end{frame}
+
 
 
 \section{What we need from the models}
@@ -698,7 +743,7 @@ G(\lambda)
 
 
 \begin{frame}
-  \frametitle{Best globally defined buoyancy?}
+  \frametitle{What is the best globally defined buoyancy?}
 
   For buoyancy-based WMT analysis, we remain using non-optimal density
   fields such as $\gamma^{\mbox{\tiny n}}$ or potential density.
