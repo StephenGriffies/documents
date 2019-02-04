@@ -256,6 +256,52 @@ G(\lambda)
 
 
 \begin{frame}
+  \frametitle{Tutorial on dia-surface transport \href{https://press.princeton.edu/titles/7797.html}{\small (Section 6.7 of Griffies 2004)}}
+
+\vspace{-.2cm} 
+\begin{center}
+{\includegraphics[width=0.6\textwidth]{./figs/dia_surface_schematic.pdf}}
+\end{center}
+
+\scriptsize  
+
+In
+\href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{Groeskamp
+  et al (2019),} we define the dia-surface velocity component,
+$u^{\mbox{\tiny dia}}$, according to the volume of seawater
+transported across a moving surface
+\begin{align}
+ &{\cal T} \equiv u^{\mbox{\tiny dia}}  \, \mathrm{d}S  \equiv \hat{\bm n} \cdot ({\bm v} - {\bm v}^{(\lambda)})  \, \mathrm{d}S
+ \Longrightarrow  \mbox{can have non-zero transport even if $\hat{\bm n} \cdot {\bm v} =0$.}
+  \\
+&\hat{\bm n} = \frac{\nabla \lambda}{|\nabla \lambda|}    = \; \; \mbox{surface outward normal direction} 
+ \\
+&{\bm v}  = \mbox{velocity of fluid element}   \qquad \mbox{and} \qquad 
+   \frac{\partial \lambda}{\partial t} +   {\bm v}^{(\lambda)} \cdot \nabla \lambda = 0.
+\end{align}
+ Following from these definitions we have 
+\begin{align}
+  \frac{\mathrm{D}\lambda}{\mathrm{D}t} 
+  &= \frac{\partial \lambda}{\partial t} + {\bm v} \cdot \nabla \lambda 
+ = \frac{\partial \lambda}{\partial t} + {\bm v}^{(\lambda)} \cdot \nabla \lambda  + ({\bm v} - {\bm v}^{(\lambda)}) \cdot \nabla \lambda 
+= 0 + u^{\mbox{\tiny dia}} \, |\nabla \lambda| 
+\\
+ &\Longrightarrow u^{\mbox{\tiny dia}}  = \frac{1}{|\nabla \lambda|} \, \frac{\mathrm{D}\lambda}{\mathrm{D}t}  = \frac{\dot{\lambda}}{|\nabla \lambda|}
+\Longrightarrow \mbox{material changes in $\lambda$ yield dia-surface transport.}
+\end{align}
+Note that for stably stratified $\lambda$-surfaces (as in generalized
+vertical coordinate models), we define
+\begin{equation}
+   {\cal T} \equiv u^{\mbox{\tiny dia}}  \mathrm{d}S  
+  \equiv  w^{\lambda}  \mathrm{d}A = (\partial z/ \partial \lambda) \, \dot{\lambda} 
+\end{equation}
+
+
+\end{frame}
+
+
+
+\begin{frame}
   \frametitle{Notable conceptual characteristics
 \small \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{(Groeskamp et al 2019)}
 }
@@ -274,6 +320,7 @@ G(\lambda)
  \footnotesize 
    \item[$\star$] $\lambda$ surfaces can be non-monotonic and disconnected.
    \item[$\star$] $\lambda$ is typically density (which one?), temperature, or salinity. 
+   \item[$\star$]  $\lambda$ perhaps could also age, PV, carbon, others.  
    \item[$\star$] Geographical non-locality $\Longrightarrow$ distinct from strict isopycnal analysis.
    \item[$\star$] Generalizable to $\Theta-S$ space ({D\"{o}\"{o}s},
      Zika, Groeskamp, collaborators).
@@ -299,39 +346,6 @@ G(\lambda)
 \end{frame}
 
 
-
-\begin{frame}
-  \frametitle{Tutorial on dia-surface transport \href{https://press.princeton.edu/titles/7797.html}{\small (Section 6.7 of Griffies 2004)}}
-
-\vspace{-.2cm} 
-\begin{center}
-{\includegraphics[width=0.5\textwidth]{./figs/dia_surface_schematic.pdf}}
-\end{center}
-
-In
-\href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{Groeskamp
-  et al (2019),} we define the dia-surface velocity component,
-$u^{\mbox{\tiny dia}}$, according to the volume of seawater
-transported across a moving surface
-\begin{align}
- &{\cal T} \equiv u^{\mbox{\tiny dia}}  \, \mathrm{d}S  \equiv \hat{\bm n} \cdot ({\bm v} - {\bm v}^{(\lambda)})  \, \mathrm{d}S
-  \\
-&\hat{\bm n} = \frac{\nabla \lambda}{|\nabla \lambda|}    = \; \; \mbox{surface outward normal direction} 
- \\
-&{\bm v}  = \mbox{fluid parcel velocity}   \qquad \mbox{and} \qquad 
-   \frac{\partial \lambda}{\partial t} +   {\bm v}^{(\lambda)} \cdot \nabla \lambda = 0.
-\end{align}
- Following from these definitions we have 
-\begin{align}
-  \frac{\mathrm{D}\lambda}{\mathrm{D}t} 
-  &= \frac{\partial \lambda}{\partial t} + {\bm v} \cdot \nabla \lambda 
- = \frac{\partial \lambda}{\partial t} + {\bm v}^{(\lambda)} \cdot \nabla \lambda  + ({\bm v} - {\bm v}^{(\lambda)}) \cdot \nabla \lambda 
-= 0 + u^{\mbox{\tiny dia}} \, |\nabla \lambda| 
-\\
- &\Longrightarrow u^{\mbox{\tiny dia}}  = \frac{1}{|\nabla \lambda|} \, \frac{\mathrm{D}\lambda}{\mathrm{D}t}  = \frac{\dot{\lambda}}{|\nabla \lambda|}.
-\end{align}
-
-\end{frame}
 
 
 
@@ -406,8 +420,8 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
 
 \begin{align}
  &\frac{\mathrm{D}^{\dagger}}{\mathrm{D}t} = \frac{\partial }{\partial t} + {\bm v}^{\dagger} \cdot \nabla, 
- \; \; {\bm v}^{\dagger} = {\bm v} + {\bm v}^{*}  \; \; 
- \mbox{w/ local mass conserve eddy}  \Longrightarrow   \nabla \cdot (\rho \, {\bm v}^{*}) = 0 
+ \; \; {\bm v}^{\dagger} = {\bm v} + {\bm v}^{*},  \; \; 
+ \mbox{local mass conserve eddy}  \Longrightarrow   \nabla \cdot (\rho \, {\bm v}^{*}) = 0 
 \\
  &\frac{\mathrm{D}^{\dagger} ( \rho \, \delta V)}{\mathrm{D}t} = 0  \Longrightarrow  
    \frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \, {\bm v}) = 0  
@@ -611,7 +625,8 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
 \end{equation}
 
 \item There is no CFL associated with vertical remapping; useful for
-  fine vertical grid spacing.
+  fine vertical grid spacing.  But remember stability does not imply
+  accuracy.
 
 \item The vertical remapping algorithm can be used for diagnostic
   purposes to remap and bin grid cell tendencies according to
@@ -724,7 +739,7 @@ G(\lambda)
      \item[$\star$] We are aiming for quantitatively robust
        results, and yet there is no direct means to double-check
        the numbers. 
-     \item[$\star$] Given sentivities to numerical choices (binning
+     \item[$\star$] Given sensitivities to numerical choices (binning
        algorithm, binning classes), the lack of a double-check is a
        real problem.
      \item[$\star$] The analogous issue does {\it not} arise with
