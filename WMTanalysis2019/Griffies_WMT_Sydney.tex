@@ -483,7 +483,7 @@ Models need to carefully diagnose $\rho \, \dot{\lambda} = -\nabla \cdot {\bm J}
   equation: a {\it kinematic} approach.
 \item Quasi-Eulerian codes: MOM5, MITgcm, NEMO, ROMS.
 \item Example coordinates are those that do not vanish (unless lose
-  ocean to rock)  $\Longrightarrow$ isopycnal coordinates are not available. 
+  ocean to rock) such as $z^{*},p,p^{*},\sigma$ whereas isopycnal coordinates are not available. 
 \end{itemize}
 \end{exampleblock}{}
 
@@ -761,7 +761,8 @@ G(\lambda)
   \frametitle{What is the best globally defined buoyancy?}
 
   For buoyancy-based WMT analysis, we remain using non-optimal density
-  fields such as $\gamma^{\mbox{\tiny n}}$ or potential density.
+  fields such as $\gamma^{\mbox{\tiny n}}$ or potential density.  Can
+  we do better? 
 
 \begin{exampleblock}{}
 \begin{itemize}
@@ -774,32 +775,35 @@ G(\lambda)
   binning.
 
 \item[$\star$] An expression for $\gamma$ that is general enough to
-  allow for arbitrary model state: paleoclimate and climate change.
-
-\item[$\star$] No direct connection to observational data so that
-  there is no geographical dependence.
+  allow for arbitrary model state so to handle paleoclimate and
+  climate change.  That is, we want no direct reliance on observational data.
 
 \item[$\star$] Accurate enough so that the material changes in
   $\gamma$ are very close to those of locally referenced potential
-  density. 
+  density.  
 
-\item[$\star$] Stated alternatively, we wish to have the $b-$factor
-  from \href{https://doi.org/10.1357/0022240053693734}{McDougall and
+\item[$\star$] But for regions where
+  $\dot{\gamma} \ne \dot{\rho}^{\mbox{\tiny local}}$ (e.g., Southern
+  Ocean), we wish to have their relation better constrained than through
+  estimation of the pesky $b-$factor from 
+  \href{https://doi.org/10.1357/0022240053693734}{McDougall and
     Jackett (2005)} and
   \href{https://journals.ametsoc.org/doi/10.1175/2007JPO3464.1}{Iudicone
-    et al (2008)} near unity everywhere
+    et al (2008)}
 \begin{equation}
    \frac{\dot{\gamma}}{\gamma} = b \, \frac{\dot{\rho}^{\mbox{\tiny local}}}{\rho^{\mbox{\tiny local}} }
    = b \, (-\alpha \, \dot{\Theta} + \beta \, \dot{S})  
-  \qquad b = \frac{ | \nabla \gamma| }{ | \nabla \rho^{\mbox{\tiny local}} | } 
-  \approx 1.
+  \qquad b = \frac{ | \nabla \gamma| }{ | \nabla \rho^{\mbox{\tiny local}} | }. 
 \end{equation}
+$\Longrightarrow$ Regions with small
+$|\nabla \rho^{\mbox{\tiny local}}|$ are problematic.
 
 \end{itemize}
 
 \item Geoff Stanley's ongoing work with Trevor to generalize the
   \href{https://www.ocean-sci.net/5/155/2009/}{Klocker and McDougall
-    (2009)} $\omega$-surfaces holds some promise.
+    (2009)} $\omega$-surfaces holds some promise.  He also has ideas
+  for a better method to compute the $b$-factor.
 
 \end{itemize}
 \end{exampleblock}{}
