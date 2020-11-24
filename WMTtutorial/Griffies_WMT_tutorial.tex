@@ -1,0 +1,717 @@
+%LATEX 
+%\documentclass[10pt,draft]{beamer}
+\documentclass[10pt]{beamer}
+\usepackage{beamerthemesplit} % new 
+
+\usepackage{bm,amsmath,amssymb}
+\usepackage{mathtools,slashed,esint}
+\usepackage{animate}
+
+\usepackage{pgf}
+\usepackage{wasysym}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{wasysym}
+\usepackage{centernot}
+
+\usepackage{tikz}
+\usepackage{pgf}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+%\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{media9}
+\usepackage{natbib}
+\usepackage{color}
+
+%\usepackage{../../../../../Documents/TEX/styles/mystyle_beamer}
+
+\usepackage{ragged2e}
+\usepackage{etoolbox}
+\usepackage{lipsum}
+
+\apptocmd{\frame}{\justifying}{}{}
+
+\usepackage{hyperref}  % must be used last in the list of packages 
+\hypersetup{colorlinks=true,linkcolor=cyan,citecolor=cyan,filecolor=cyan,urlcolor=cyan}
+% \hypersetup{colorlinks=true,linkcolor=red,citecolor=red,filecolor=red,urlcolor=red} 
+
+
+\setlength\fboxsep{0pt}
+\setlength\fboxrule{0.5pt}
+
+\newcommand\myeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily M constant}}}{=}}}
+\newcommand\myeqq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily Stokes Thm}}}{=}}}
+
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+\newcommand{\Simley}[1]{%
+\begin{tikzpicture}[scale=0.11]
+    \newcommand*{\SmileyRadius}{1.0}%
+    \draw [fill=brown!10] (0,0) circle (\SmileyRadius)% outside circle
+        %node [yshift=-0.22*\SmileyRadius cm] {\tiny #1}% uncomment this to see the smile factor
+        ;  
+
+    \pgfmathsetmacro{\eyeX}{0.5*\SmileyRadius*cos(30)}
+    \pgfmathsetmacro{\eyeY}{0.5*\SmileyRadius*sin(30)}
+    \draw [fill=cyan,draw=none] (\eyeX,\eyeY) circle (0.15cm);
+    \draw [fill=cyan,draw=none] (-\eyeX,\eyeY) circle (0.15cm);
+
+    \pgfmathsetmacro{\xScale}{2*\eyeX/180}
+    \pgfmathsetmacro{\yScale}{1.0*\eyeY}
+    \draw[color=red, domain=-\eyeX:\eyeX]   
+        plot ({\x},{
+            -0.1+#1*0.15 % shift the smiley as smile decreases
+            -#1*1.75*\yScale*(sin((\x+\eyeX)/\xScale))-\eyeY});
+\end{tikzpicture}%
+}%
+
+
+
+% beamer prologue begins here
+\mode<presentation>
+{                               % see user guide for choices
+%  \usetheme{Frankfurt}
+  \usetheme{Madrid}
+%  \usecolortheme{seahorse}
+%  \usecolortheme[RGB={205,173,0}]{structure} 
+  \usecolortheme[RGB={0,100,180}]{structure} 
+  \usefonttheme[onlymath]{serif}
+  \setbeamercovered{transparent} % or whatever (possibly just delete it)
+}
+
+% drop those navigation symbols at bottom right
+%\setbeamertemplate{navigation symbols}{} 
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+
+\title[WMT Theory and Practice]{A technical guide to water mass transformation (WMT) analysis} % (optional)
+\author[{\sc
+  Stephen.M.Griffies@gmail.com}]{ {\sc Stephen.Griffies@noaa.gov} 
+ \\ \vspace{.3cm} {\small  \today}
+}
+% - Use the \inst{?} command only if the authors have different 
+%   affiliation. 
+
+\institute[NOAA/GFDL + Princeton University]{NOAA/GFDL + Princeton University} 
+
+%\date{\today}
+\date{}
+
+
+%\logo{\includegraphics[height=5mm]{../../../../../Documents/images/PrincetonLogo.png}}  
+%\logo{\includegraphics[height=5mm]{./figs/noaa-logo.png}} 
+
+\logo{\includegraphics[height=3mm]{./figs/noaa-logo.png}  \hspace{11cm} 
+\includegraphics[height=3mm]{./figs/PrincetonLogo.png}} 
+
+\subject{Talks} % for "PDF information catalog", can be left out. 
+
+% this shows the outline at the beginning of every section,
+% highlighting the current section
+ \AtBeginSection[]
+ {
+   \begin{frame}
+     \frametitle{Outline}
+ \tableofcontents[ 
+ currentsubsection, 
+ hideothersubsections, 
+ sectionstyle=show/hide, 
+ subsectionstyle=show/hide, 
+ ] 
+   \end{frame}
+ }
+
+
+\setlength{\unitlength}{1mm}  % used in picture environment
+
+\begin{document}
+
+%\footnotesize 
+
+  
+% beamer makes the titlepage from info above: author, date, title, etc.
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+
+% beamer makes the ToC from sections and subsections below...
+% \begin{frame}
+%   \frametitle{Outline}
+%   \tableofcontents
+% \end{frame}
+
+
+%\section{Fundamentals} 
+
+\begin{frame}
+  \frametitle{Some general points}
+\scriptsize 
+
+\begin{exampleblock}{}
+  
+  \begin{itemize}
+    
+  \item[$\star$] WMT analysis is the study of budgets for seawater
+    mass and tracer mass within layers or {\it water mass classes}.
+
+  \item[$\star$] Layers are defined by a scalar field $\lambda$, with examples given by 
+    \begin{itemize}
+      \scriptsize 
+     \item tracer concentrations: $\lambda = S, \Theta, \mbox{CO}_{2}$ 
+     \item measures of ocean buoyancy: $\lambda = \gamma$ = potential density or neutral density 
+    \end{itemize}
+  
+  \item[$\star$] WMT analysis is concerned with the {\it mass
+      distribution} of seawater binned according to $\lambda$-classes.
+\begin{itemize}
+      \scriptsize 
+    \item By extension, WMT analysis is concerned with the physical
+      and biogeochemical processes leading to modifications of the
+      mass distribution.
+    \end{itemize}
+
+  \item[$\star$] {\it Transformation} refers to the transport of
+    seawater across a $\lambda$-isosurface, thus leading to a
+    modification of the $\lambda$ mass distribution.
+\begin{itemize}
+      \scriptsize 
+      \item Transformation across a $\lambda$-isosurface occurs
+      via material changes to $\lambda$.  
+     \item Written mathematically, transformation occurs when 
+\begin{equation*}
+  \dot{\lambda}  =  \frac{\mathrm{D} \lambda}{ \mathrm{D}t}
+  = \frac{\partial \lambda}{\partial t} + {\bm v} \cdot \nabla \lambda \ne 0.
+\end{equation*}
+    \end{itemize}
+
+
+  \item[$\star$] {\it Formation} refers to the net accumulation of
+    water into a layer or class.  
+\begin{itemize}
+      \scriptsize 
+    \item Formation is computed by taking the difference of the
+      transformation across the layer boundaries.
+     \item {\it Formation = convergence of transformation}
+\end{itemize}
+
+
+\end{itemize}
+\end{exampleblock}{}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Mass distributions, transformation, and formation}
+\scriptsize 
+
+\begin{exampleblock}{}
+\begin{itemize}
+\item[$\star$]
+  $\mathrm{d} M = m(\lambda) \, \delta \lambda = \mbox{mass within the
+    infinitesimal $\lambda$-layer} \; [\lambda - \delta \lambda/2,
+  \lambda + \delta \lambda/2]$
+\item[$\star$]  $G(\lambda) = $ {\it transformation} = mass transport
+ (mass per time) of seawater crossing $\lambda$-isosurface.
+\item[$\star$]  $G(\lambda) > 0$ means water moves to larger $\lambda$.  
+\item[$\star$] We here consider a three-class example with $\lambda = \gamma = $ buoyancy.
+\end{itemize}
+\end{exampleblock}
+
+\begin{center}
+{\includegraphics[width=0.9\textwidth]{./figs/sample_density_distribution.pdf}}
+\end{center}
+
+\begin{equation*}
+   G(\gamma') = 
+    \left[
+    \begin{array}{lll}
+     0     &\gamma' = \gamma - \delta\gamma/2  &\mbox{closed boundary} \\
+     <0   &\gamma' = \gamma + \delta\gamma/2  &\mbox{mass moves to light density from middle}\\
+     >0   &\gamma' = \gamma + 3 \, \delta\gamma/2  &\mbox{mass moves from middle density to heavy}\\
+     0     &\gamma' = \gamma + 5\, \delta\gamma/2  &\mbox{closed boundary.} 
+    \end{array}
+    \right.
+\end{equation*}
+
+The convergence of $G$ yields the formation into a layer: 
+\begin{align*}
+  \mbox{light-formation}  &= -[G(\gamma + \delta\gamma/2) - G(\gamma - \delta\gamma/2)] > 0 
+\\
+  \mbox{middle-formation} &= -[G(\gamma  + 3 \, \delta\gamma/2) - G(\gamma + \delta\gamma/2)]  < 0 
+\\
+  \mbox{heavy-formation}  &= -[G(\gamma  + 5 \, \delta\gamma/2) - G(\gamma + 3 \, \delta\gamma/2)] > 0.  
+\end{align*}
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Seawater mass budget for a $\Delta \lambda$-layer}
+\tiny 
+
+\begin{exampleblock}{}
+
+\begin{equation*}
+ \underbrace{ \frac{\mathrm{d} \Delta M}{\mathrm{d}  t} + \Delta \Psi}_{\mbox{\tiny storage + outflow}}
+ = \underbrace{ \Delta W 
+ -[ G(\lambda + \Delta \lambda/2) - G(\lambda - \Delta \lambda/2) ]
+  }_{\mbox{\tiny formation into layer $\Omega_{(\lambda \pm \Delta \lambda/2)}$}}
+\end{equation*}
+
+\end{exampleblock}
+\begin{center}
+{\includegraphics[width=0.4\textwidth]{./figs/wmt_lambda_schematic.pdf}}
+\hspace{.5cm}
+{\includegraphics[width=0.55\textwidth]{./figs/tracer_mass_density_function.pdf}}
+ \end{center}
+
+\tiny 
+
+\begin{align*}
+ \underbrace{\Delta M(\lambda \pm \Delta \lambda/2)}_{\mbox{\tiny layer mass}}
+ &= \int_{\Omega(\lambda \pm \Delta \lambda/2)} \rho \, \mathrm{d}V 
+   =  \int_{\lambda - \Delta \lambda/2}^{\lambda + \Delta \lambda/2}  m(\lambda') \, \mathrm{d}\lambda'
+\\
+ \underbrace{\Delta \Psi(\lambda \pm \Delta \lambda/2)}_{\mbox{\tiny interior bdy mass transport}}
+ &= +\int_{\partial \Omega_{\mbox{\tiny in}}(\lambda \pm \Delta \lambda/2)} \rho \,
+ ({\bm v} - {\bm v}^{(b)}) \cdot \hat{\bm n} \, \mathrm{d}\mathcal{S}
+= \int_{\lambda - \Delta \lambda/2}^{\lambda + \Delta \lambda/2} 
+    \dot{m}_{\Psi}(\lambda') \, \mathrm{d}\lambda'
+\\
+ \underbrace{\Delta W(\lambda \pm \Delta \lambda/2)}_{\mbox{\tiny surface bdy mass transport}}
+&=
+-\int_{\partial \Omega_{\mbox{\tiny out}}(\lambda \pm \Delta \lambda/2)} \rho \,
+ ({\bm v} - {\bm v}^{(\eta)}) \cdot \hat{\bm n} \, \mathrm{d}\mathcal{S}
+ =
+ \int_{\partial \Omega_{\mbox{\tiny out}}(\lambda \pm \Delta \lambda/2)} 
+ \mathcal{Q}_{\mbox{\tiny m}} \, \mathrm{d}\mathcal{S}
+= \int_{\lambda - \Delta \lambda/2}^{\lambda + \Delta \lambda/2} 
+    \dot{m}_{\mbox{\tiny W}}(\lambda') \, \mathrm{d}\lambda'
+\\
+ m (\lambda) \, \delta \lambda 
+&= \mbox{mass contained within the increment $[\lambda-\delta \lambda/2, \lambda+\delta \lambda/2]$}
+\\
+\dot{m}_{\Psi}(\lambda) \, \delta \lambda 
+&= \mbox{mass per time crossing  
+$\partial \Omega_{\mbox{\tiny in}}$ 
+ within the increment $[\lambda-\delta \lambda/2, \lambda+\delta \lambda/2]$}
+\\
+ \dot{m}_{\mbox{\tiny W}}(\lambda)   \, \delta \lambda 
+&= \mbox{mass per time crossing $\partial \Omega_{\mbox{\tiny out}}$ 
+ within the increment $[\lambda-\delta \lambda/2, \lambda+\delta \lambda/2]$.}
+\end{align*}   
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Calculating the transformation $G(\lambda)$}
+\scriptsize 
+ 
+\begin{exampleblock}{}
+
+Transformation across a $\lambda$-surface is given by the equivalent
+mathematical expressions
+\begin{equation*}
+ G(\lambda) 
+ = \int_{\partial \Omega(\lambda) } \rho \,  \hat{\bm n} \cdot ({\bm v} -{\bm v}^{(\lambda)} )   \, \mathrm{d}\mathcal{S}
+ = \int_{\partial \Omega(\lambda)} \frac{\rho \, \dot{\lambda}}{|\nabla \lambda|} \, \mathrm{d}\mathcal{S}
+ = \lim_{\delta \lambda \rightarrow 0}
+ \frac{1}{\delta \lambda}
+ \int_{\Omega(\lambda \pm \delta \lambda/2)} \rho \, \dot{\lambda}' \, \mathrm{d}V.
+\end{equation*}
+The final equality is conducive to estimations via partitioning the
+contributions to $\rho \, \dot{\lambda}$ into $\delta \lambda$-bins.
+
+\end{exampleblock}
+
+There are two conceptually distinct but mathematically equivalent
+methods to compute $\rho \, \dot{\lambda}$.
+\begin{itemize}
+
+\item[$\star$] The {\it process method} tells us why there is
+  transformation across a $\lambda$-surface.  This is the method most
+  commonly used in practice.
+\begin{equation*}
+ \rho \, \mathrm{D}\lambda/ \mathrm{D}t 
+   = \underbrace{-\nabla \cdot {\bm J}}_{\mbox{\tiny mixing + boundary fluxes}} \; \; 
+   + \; \; \underbrace{\rho \, \dot{\Upsilon}}_{\mbox{\tiny sources}}
+\end{equation*}
+
+\item[$\star$] The {\it kinematic method} tells us how there is
+  transformation across a $\lambda$-surface.
+\begin{equation*}
+ \rho \, \mathrm{D}\lambda/\mathrm{D}t 
+ = \underbrace{\partial (\rho \, \lambda)/\partial t}_{\mbox{\tiny local tendency}}
+  \; \; 
+  + 
+ \; \;  \underbrace{\nabla \cdot (\rho \, {\bm v}^{\dagger} \, \lambda)}_{\mbox{\tiny residual mean advection}} 
+\end{equation*}
+ 
+\item[$\star$] Experience with MOM5 suggests that it is not trivial to
+  ensure the two methods yield identical results since the diagnostic
+  methods must be carefully coded.  Furthermore, there are no studies
+  making use of the kinematic method so it is unclear how useful it
+  is.  
+
+\item[$\star$] We thus focus on the process method in the remainder of
+  this tutorial.
+
+\item[$\star$] Furthermore, the source term,
+  $\rho \, \dot{\Upsilon}_{\mbox{\tiny sources}}$, is zero for $S$
+and $\Theta$, so we ignore it for the remainder.
+
+\end{itemize}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{The process method for computing $G(\lambda)$}
+\scriptsize 
+
+\begin{exampleblock}{}
+ 
+The process method consists of estimating the following volume
+integral
+\begin{equation*}
+ G(\lambda) 
+ = 
+\lim_{\delta \lambda \rightarrow 0}
+ \frac{1}{\delta \lambda}
+ \int_{\Omega(\lambda \pm \delta \lambda/2)} \rho \, \dot{\lambda}' \, \mathrm{d}V
+=
+\lim_{\delta \lambda \rightarrow 0}
+ \frac{1}{\delta \lambda}
+ \int_{\Omega(\lambda \pm \delta \lambda/2)} [-\nabla \cdot {\bm J} ] \, \mathrm{d}V.
+\end{equation*}
+
+\end{exampleblock}
+
+It is convenient to decompose the flux divergence into an interior
+mixing term plus surface boundary fluxes 
+\begin{equation*}
+  \nabla \cdot {\bm J} =    \underbrace{ \nabla \cdot {\bm J}_{\mbox{\tiny interior}}
+     }_{\mbox{\tiny interior processes}} 
+  + \underbrace{ {\bm J}_{\mbox{\tiny out}} \cdot \hat{\bm n} \, \delta (z-\eta)
+      }_{\mbox{\tiny surface boundary fluxes}}
+  + \underbrace{ {\bm J}_{\mbox{\tiny bot}} \cdot \hat{\bm n} \, \delta (z-\eta_{\mbox{\tiny b}})
+     }_{\mbox{\tiny bottom boundary processes}}.
+\end{equation*}
+\begin{multline*}
+ G(\lambda)
+ =
+ \underbrace{
+  -\lim_{\delta \lambda \rightarrow 0}
+ \frac{1}{\delta \lambda}
+ \left[ \int_{\Omega(\lambda \pm \delta \lambda/2)} \nabla \cdot {\bm J}_{\mbox{\tiny interior}} \, \mathrm{d}V
+  \right]
+  }_{\mbox{\tiny interior transformation = volume integral of convergence}}
+ \\
+ \underbrace{
+  -\lim_{\delta \lambda \rightarrow 0}
+ \frac{1}{\delta \lambda}
+ \left[ \int_{\partial \Omega_{\mbox{\tiny out}} (\lambda \pm \delta \lambda/2)} 
+{\bm J}_{\mbox{\tiny out}} \cdot \hat{\bm n} \, \mathrm{d}\mathcal{S}
+  \right]
+ }_{\mbox{\tiny surface transformation = area integral of surface fluxes}}
+\; \;
+ \underbrace{
+  -\lim_{\delta \lambda \rightarrow 0}
+ \frac{1}{\delta \lambda}
+ \left[ \int_{\partial \Omega_{\mbox{\tiny  bot}} (\lambda \pm \delta \lambda/2)} 
+{\bm J}_{\mbox{\tiny bot}} \cdot \hat{\bm n} \, \mathrm{d}\mathcal{S}
+  \right].
+ }_{\mbox{\tiny bottom transformation = area integral of bottom fluxes}}
+\end{multline*}
+
+\begin{itemize}
+\item[$\star$] The first term on the right hand side is the binned tendency from
+interior processes such as mixing and shortwave heating.  
+
+\item[$\star$] The second term is the binned non-advective surface
+transport and third is binned non-advective bottom transport.  
+
+\item[$\star$] {\it Interior} refers to anything not arising from
+  fluxes crossing $z=\eta$ or $z-\eta_{\mbox{\tiny b}}$.  Hence, it
+  includes strong boundary layer misxing processes.
+
+\end{itemize}
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Non-advective surface boundary fluxes}
+\tiny 
+
+\begin{exampleblock}{}
+ 
+\begin{equation*}
+\mbox{surface transformation}
+ = 
+ G(\lambda)_{\mbox{\tiny surface}}  
+\equiv 
+\lim_{\delta \lambda \rightarrow 0}
+ \frac{1}{\delta \lambda}
+ \left[ \int_{\partial \Omega_{\mbox{\tiny out}} (\lambda \pm \delta \lambda/2)} 
+ [-{\bm J}_{\mbox{\tiny out}} \cdot \hat{\bm n}] \, \mathrm{d}\mathcal{S}
+  \right]
+\end{equation*}
+
+\end{exampleblock}
+
+
+\begin{itemize}
+
+\item[$\star$] {\sc salinity}: $\lambda = S$.  If salt is dissolved in
+  the surface mass flux, then the advective salt flux crossing the
+  ocean surface is
+  $S_{\mbox{\tiny m}} \, \mathcal{Q}_{\mbox{\tiny m}}$.  There may
+  also be a non-advective salt flux,
+  $\mathcal{Q}_{\mbox{\tiny S}}^{\mbox{\tiny non-adv}}$, from
+  turbulent transfer and/or surface salt restoring in an OMIP
+  simulation so that the net salt flux is
+\begin{equation*} 
+   \mathcal{Q}_{\mbox{\tiny S}} = S_{\mbox{\tiny m}} \,
+  \mathcal{Q}_{\mbox{\tiny m}} + \mathcal{Q}_{\mbox{\tiny S}}^{\mbox{\tiny non-adv}}.
+\end{equation*}
+This salt flux is met on the ocean side by an advective and
+non-advective ocean flux so that
+\begin{equation*}
+  \mathcal{Q}_{\mbox{\tiny S}} = 
+   S_{\mbox{\tiny m}} \, \mathcal{Q}_{\mbox{\tiny m}} 
++ \mathcal{Q}_{\mbox{\tiny S}}^{\mbox{\tiny non-adv}} 
+= S \, \mathcal{Q}_{\mbox{\tiny  m}} - \hat{\bm n} \cdot {\bm J}^{(S)}
+\qquad \mbox{with $S$ the salinity at $z=\eta$.}
+\end{equation*}
+Rearrangement leads to the induced non-advective flux on the ocean
+side of the surface boundary
+\begin{equation*}
+\boxed{
+  -\hat{\bm n} \cdot {\bm J}^{(S)} =
+ (S_{\mbox{\tiny m}} - S) \, \mathcal{Q}_{\mbox{\tiny m}} + \mathcal{Q}_{\mbox{\tiny S}}^{\mbox{\tiny non-adv}}.
+}
+ \end{equation*}
+ Typically $S_{\mbox{\tiny m}} =0$ except for exchanges of salt with
+ sea ice.
+
+\begin{center}
+{\includegraphics[width=0.5\textwidth]{./figs/ocean_surface_boundary_water_Theta_S.pdf}}
+ \end{center}
+
+
+\item[$\star$] {\sc Conservative Temperature}: $\lambda = \Theta$.
+  The same considerations hold for Conservative Temperature so that
+  its net flux is
+\begin{equation*}  
+\mathcal{Q}_{\Theta} = \Theta_{\mbox{\tiny m}} \,
+  \mathcal{Q}_{\mbox{\tiny m}} + \mathcal{Q}_{\Theta}^{\mbox{\tiny non-adv}}, 
+\end{equation*}
+where $\mathcal{Q}_{\Theta}^{\mbox{\tiny non-adv}}$ arises from
+turbulent and radiative heat fluxes.  This flux is met on the ocean
+side by an advective and non-advective ocean flux,
+$\mathcal{Q}_{\Theta} = \Theta \, \mathcal{Q}_{\mbox{\tiny m}} -
+\hat{\bm n} \cdot {\bm J}^{(\Theta)}$, so that the induced
+non-advective flux is
+\begin{equation*}
+\boxed{
+  -\hat{\bm n} \cdot {\bm J}^{(\Theta)} = 
+ (\Theta_{\mbox{\tiny m}} - \Theta) \, \mathcal{Q}_{\mbox{\tiny m}} + \mathcal{Q}_{\Theta}^{\mbox{\tiny non-adv}}
+ \qquad \mbox{with $\Theta$ the Conservative Temp at $z=\eta$.}
+}
+\end{equation*}
+In most applications we set $\Theta_{\mbox{\tiny m}} - \Theta =0$ so
+that
+$-\hat{\bm n} \cdot {\bm J}^{(\Theta)} =
+\mathcal{Q}_{\Theta}^{\mbox{\tiny non-adv}}$.
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Buoyancy water mass transformation: $\lambda = \gamma$}
+
+%\begin{exampleblock}{}
+
+\scriptsize 
+$\lambda = \gamma$ is potential density or neutral density, used here to measure buoyancy water mass transformation.   
+
+\tiny  
+\begin{align*}
+  \rho \, \dot{\gamma} &= 
+  \frac{\partial \gamma}{\partial S} \, \rho \, \dot{S}
+ +
+  \frac{\partial \gamma}{\partial \Theta} \, \rho \, \dot{\Theta}
+ =
+ \gamma \, ( \beta_{\mbox{\tiny S}} \, \rho \, \dot{S} - \alpha_{\Theta} \, \rho \, \dot{\Theta})
+\\
+   \rho \, \dot{S} &= 
+   - \nabla \cdot {\bm J}^{(S)}_{\mbox{\tiny interior}} 
+   - {\bm J}^{(S)}_{\mbox{\tiny out}} \cdot \hat{\bm n} \, \delta(z-\eta)
+   - {\bm J}^{(S)}_{\mbox{\tiny bot}} \cdot \hat{\bm n} \, \delta(z-\eta_{\mbox{\tiny b}})
+ \\
+  \rho \, \dot{\Theta} &= 
+    -\nabla \cdot {\bm J}^{(\Theta)}_{\mbox{\tiny interior}} 
+    - {\bm J}^{(\Theta)}_{\mbox{\tiny out}} \cdot \hat{\bm n} \, \delta(z-\eta)
+   - {\bm J}^{(\Theta)}_{\mbox{\tiny bot}} \cdot \hat{\bm n} \, \delta(z-\eta_{\mbox{\tiny b}} )
+\\
+% \end{align*}
+% %\end{exampleblock}
+% \begin{align*}
+ G(\gamma) &= 
+ \underbrace{
+  -\lim_{\delta \gamma \rightarrow 0}
+ \frac{1}{\delta \gamma}
+ \left[ \int_{\Omega(\gamma \pm \delta \gamma/2)} 
+  \left(\frac{\partial \gamma}{\partial S} \, \nabla \cdot {\bm J}^{(S)}_{\mbox{\tiny interior}} 
+ +\frac{\partial \gamma}{\partial \Theta} \, \nabla \cdot {\bm J}^{(\Theta)}_{\mbox{\tiny interior}} 
+  \right)
+  \mathrm{d}V
+  \right]
+  }_{\mbox{\tiny interior buoyancy transformation = volume integral of convergence}}
+\nonumber 
+ \\
+  & \; \; 
+ \underbrace{
+  -\lim_{\delta \gamma \rightarrow 0}
+ \frac{1}{\delta \gamma}
+ \left[ \int_{\partial \Omega_{\mbox{\tiny out}} (\gamma \pm \delta \gamma/2)} 
+ \left(  \frac{\partial \gamma}{\partial S} \, {\bm J}^{(S)}_{\mbox{\tiny out}}  
+     +   \frac{\partial \gamma}{\partial \Theta} \, {\bm J}^{(\Theta)}_{\mbox{\tiny out}}  
+  \right)
+  \cdot \hat{\bm n} \, \mathrm{d}\mathcal{S}
+  \right]
+ }_{\mbox{\tiny surface buoyancy transformation = area integral of surface boundary fluxes}}
+\nonumber 
+\\
+ & \; \; 
+  \underbrace{
+ -\lim_{\delta \gamma \rightarrow 0}
+ \frac{1}{\delta \gamma}
+ \left[ \int_{\partial \Omega_{\mbox{\tiny bot}} (\gamma \pm \delta \gamma/2)} 
+ \left(  \frac{\partial \gamma}{\partial S} \, {\bm J}^{(S)}_{\mbox{\tiny bot}}  
+     +   \frac{\partial \gamma}{\partial \Theta} \, {\bm J}^{(\Theta)}_{\mbox{\tiny bot}}  
+  \right)
+  \cdot \hat{\bm n} \, \mathrm{d}\mathcal{S}
+  \right]
+ }_{\mbox{\tiny bottom buoyancy transformation = area integral of bottom boundary fluxes}}
+\\
+G(\gamma)_{\mbox{\tiny surface}}^{\mbox{\tiny S}} &=
+ \lim_{\delta \gamma \rightarrow 0}
+ \frac{1}{\delta \gamma}
+ \left[ \int_{\partial \Omega_{\mbox{\tiny out}} (\gamma \pm \delta \gamma/2)} 
+  \beta_{\mbox{\tiny S}} \, 
+          [\mathcal{Q}_{S}^{\mbox{\tiny non-adv}} + (S -  S_{\mbox{\tiny m}} ) \, \mathcal{Q}_{\mbox{\tiny m}}]  
+  \gamma \, \mathrm{d}\mathcal{S}
+  \right]
+\\
+G(\gamma)_{\mbox{\tiny surface}}^{\Theta} &=
+ -\lim_{\delta \gamma \rightarrow 0}
+ \frac{1}{\delta \gamma}
+ \left[ \int_{\partial \Omega_{\mbox{\tiny out}} (\gamma \pm \delta \gamma/2)} 
+  \alpha_{\Theta} \, 
+       [\mathcal{Q}_{\Theta}^{\mbox{\tiny non-adv}} +  (\Theta_{\mbox{\tiny m}}-\Theta) \, \mathcal{Q}_{\mbox{\tiny m}}]
+  \gamma \, \mathrm{d}\mathcal{S}
+  \right]
+\end{align*}
+
+\scriptsize 
+\begin{itemize}
+
+\item[$\star$] Note multiplication of terms by
+  $(\partial \gamma/\partial S)$ and
+  $(\partial \gamma/\partial \Theta)$. Offline now (online requires
+  MOM6 code).
+
+\item[$\star$] $\Theta_{\mbox{\tiny m}}-\Theta = 0$ assumed for surface advective heat fluxes. 
+
+\item[$\star$] $S_{\mbox{\tiny m}} = 0$ assumed for precip, evap, and rivers. 
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Example surface buoyancy transformation}
+ 
+\begin{figure}
+\centering
+\includegraphics[angle=0,width=.7\textwidth]{./figs/WMT_schematic.pdf}
+\caption{Transformation due to meridional gradient in the surface
+  buoyancy loss. Buoyancy loss is denoted by the blue vertical arrows
+  indicating the removal of buoyancy from the ocean. The surface
+  buoyancy loss causes $\gamma$ interfaces to migrate to the south,
+  which in turn causes dianeutral mass flux to move from lighter
+  layers to denser layers (black vectors pointed to the north,
+  $w^{\mbox{\tiny dia}}$). With a peak in the buoyancy loss at a
+  particular latitude, more entrainment is driven into the layer to
+  the north of the peak (water converges to the layer
+  $\gamma_{3/2} \le \gamma \le \gamma_{5/2}$) and less entrainment
+  into the layer to the south (water diverges from the layer
+  $\gamma_{1/2} \le \gamma \le \gamma_{3/2}$).}
+\label{fig:WMT_schematic}
+\end{figure}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Further study}
+ 
+\begin{itemize}
+
+\item[$\star$] Much of the formalism presented here is taken from the
+  review paper:
+ \begin{itemize}
+ \item
+   \href{https://www.annualreviews.org/doi/abs/10.1146/annurev-marine-010318-095421}{The
+     water mass transformation framework for ocean physics and
+     biogeochemistry, 2019: S. Groeskamp, S.M. Grif\/f\/ies,
+     D. Iudicone, R. Marsh, A.J.G. Nurser, and J.D. Zika, {\it Annual
+       Review of Marine Science}, {\bf 11}, 21.1-21.35,
+     doi:10.1146/annurev-marine-010318-095421.}
+  \end{itemize}
+
+\item[$\star$] Further material is provided in Chapter 50 of the
+  book
+ \begin{itemize}
+ \item
+   \href{https://stephengriffies.github.io/assets/pdfs/GFM\_lectures.pdf}{Elements
+     of Geophysical Fluid Mechanics with Ocean Applications, 2020:
+     S.M. Grif\/f\/ies}.
+  \end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\end{document}
+
