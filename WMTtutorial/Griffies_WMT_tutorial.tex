@@ -163,18 +163,30 @@
   
   \begin{itemize}
     
-  \item[$\star$] WMT analysis is the study of budgets for seawater
-    mass and tracer mass within layers or {\it water mass classes}.
+  \item[$\star$] Water mass transformation (WMT) analysis is the study
+    of budgets for seawater mass and/or tracer mass within layers or \underline{\it
+      water mass classes}.  
 
-  \item[$\star$] Layers are defined by a scalar field $\lambda$, with examples given by 
+   \begin{itemize}
+   \scriptsize 
+   \item This approach contrasts to local (Eulerian) budget analysis
+     that focuses on fixed regions.
+   \item It also contrasts with Lagrangian or quasi-Lagrangian
+     approaches that follow fluid elements.
+   \end{itemize}
+
+ \item[$\star$] Layers or classes are defined by a scalar field
+   $\lambda$, which is a function of space and time,
+   $\lambda({\bm x},t)$.
     \begin{itemize}
       \scriptsize 
      \item tracer concentrations: $\lambda = S, \Theta, \mbox{CO}_{2}$ 
-     \item measures of ocean buoyancy: $\lambda = \gamma$ = potential density or neutral density 
+     \item buoyancy: $\lambda = \gamma$ = potential density or neutral density 
     \end{itemize}
   
-  \item[$\star$] WMT analysis is concerned with the {\it mass
-      distribution} of seawater binned according to $\lambda$-classes.
+  \item[$\star$] WMT analysis is concerned with the \underline{\it
+      mass distribution} of seawater binned according to
+    $\lambda$-classes.
 \begin{itemize}
       \scriptsize 
     \item By extension, WMT analysis is concerned with the physical
@@ -182,13 +194,14 @@
       mass distribution.
     \end{itemize}
 
-  \item[$\star$] {\it Transformation} refers to the transport of
-    seawater across a $\lambda$-isosurface, thus leading to a
-    modification of the $\lambda$ mass distribution.
+  \item[$\star$] \underline{\it Transformation} refers to the
+    transport of seawater mass and tracer mass across a
+    $\lambda$-isosurface, thus leading to a modification of the
+    $\lambda$ mass distribution.
 \begin{itemize}
       \scriptsize 
-      \item Transformation across a $\lambda$-isosurface occurs
-      via material changes to $\lambda$.  
+    \item Transformation across a $\lambda$-isosurface is measured by
+      a nonzero material change to $\lambda$.
      \item Written mathematically, transformation occurs when 
 \begin{equation*}
   \dot{\lambda}  =  \frac{\mathrm{D} \lambda}{ \mathrm{D}t}
@@ -197,13 +210,13 @@
     \end{itemize}
 
 
-  \item[$\star$] {\it Formation} refers to the net accumulation of
-    water into a layer or class.  
+  \item[$\star$] \underline{\it Formation} refers to the net
+    accumulation of water into a layer or class.
 \begin{itemize}
       \scriptsize 
     \item Formation is computed by taking the difference of the
       transformation across the layer boundaries.
-     \item {\it Formation = convergence of transformation}
+     \item \underline{\it Formation = convergence of transformation}.
 \end{itemize}
 
 
@@ -225,7 +238,7 @@
   \lambda + \delta \lambda/2]$
 \item[$\star$]  $G(\lambda) = $ {\it transformation} = mass transport
  (mass per time) of seawater crossing $\lambda$-isosurface.
-\item[$\star$]  $G(\lambda) > 0$ means water moves to larger $\lambda$.  
+\item[$\star$]  $G(\lambda) > 0$ (conventionally) means water moves to larger $\lambda$.  
 \item[$\star$] We here consider a three-class example with $\lambda = \gamma = $ buoyancy.
 \end{itemize}
 \end{exampleblock}
@@ -238,10 +251,10 @@
    G(\gamma') = 
     \left[
     \begin{array}{lll}
-     0     &\gamma' = \gamma - \delta\gamma/2  &\mbox{closed boundary} \\
+     0     &\gamma' = \gamma - \delta\gamma/2  &\mbox{boundary assumed to be closed} \\
      <0   &\gamma' = \gamma + \delta\gamma/2  &\mbox{mass moves to light density from middle}\\
      >0   &\gamma' = \gamma + 3 \, \delta\gamma/2  &\mbox{mass moves from middle density to heavy}\\
-     0     &\gamma' = \gamma + 5\, \delta\gamma/2  &\mbox{closed boundary.} 
+     0     &\gamma' = \gamma + 5\, \delta\gamma/2  &\mbox{boundary assumed to be closed} 
     \end{array}
     \right.
 \end{equation*}
@@ -261,8 +274,8 @@ The convergence of $G$ yields the formation into a layer:
 
 \begin{frame}
   \frametitle{Seawater mass budget for a $\Delta \lambda$-layer}
-\tiny 
 
+\scriptsize 
 \begin{exampleblock}{}
 
 \begin{equation*}
@@ -272,11 +285,12 @@ The convergence of $G$ yields the formation into a layer:
   }_{\mbox{\tiny formation into layer $\Omega_{(\lambda \pm \Delta \lambda/2)}$}}
 \end{equation*}
 
+\tiny 
 \end{exampleblock}
 \begin{center}
 {\includegraphics[width=0.4\textwidth]{./figs/wmt_lambda_schematic.pdf}}
 \hspace{.5cm}
-{\includegraphics[width=0.55\textwidth]{./figs/tracer_mass_density_function.pdf}}
+{\includegraphics[width=0.5\textwidth]{./figs/tracer_mass_density_function.pdf}}
  \end{center}
 
 \tiny 
@@ -343,7 +357,7 @@ There are two conceptually distinct but mathematically equivalent
 methods to compute $\rho \, \dot{\lambda}$.
 \begin{itemize}
 
-\item[$\star$] The {\it process method} tells us why there is
+\item[$\star$] The \underline{\it process method} tells us why there is
   transformation across a $\lambda$-surface.  This is the method most
   commonly used in practice.
 \begin{equation*}
@@ -352,7 +366,7 @@ methods to compute $\rho \, \dot{\lambda}$.
    + \; \; \underbrace{\rho \, \dot{\Upsilon}}_{\mbox{\tiny sources}}
 \end{equation*}
 
-\item[$\star$] The {\it kinematic method} tells us how there is
+\item[$\star$] The \underline{\it kinematic method} tells us how there is
   transformation across a $\lambda$-surface.
 \begin{equation*}
  \rho \, \mathrm{D}\lambda/\mathrm{D}t 
@@ -362,18 +376,19 @@ methods to compute $\rho \, \dot{\lambda}$.
  \; \;  \underbrace{\nabla \cdot (\rho \, {\bm v}^{\dagger} \, \lambda)}_{\mbox{\tiny residual mean advection}} 
 \end{equation*}
  
+\item[$\star$] Sometimes useful to diagnose the kinematic method and
+  then to infer process method mixing.
+ 
 \item[$\star$] Experience with MOM5 suggests that it is not trivial to
   ensure the two methods yield identical results since the diagnostic
-  methods must be carefully coded.  Furthermore, there are no studies
-  making use of the kinematic method so it is unclear how useful it
-  is.  
+  methods must be carefully coded. 
 
-\item[$\star$] We thus focus on the process method in the remainder of
-  this tutorial.
+\item[$\star$] We focus on the process method in the remainder of this
+  tutorial.
 
-\item[$\star$] Furthermore, the source term,
-  $\rho \, \dot{\Upsilon}_{\mbox{\tiny sources}}$, is zero for $S$
-and $\Theta$, so we ignore it for the remainder.
+\item[$\star$] The source term,
+  $\rho \, \dot{\Upsilon}_{\mbox{\tiny sources}}$, is zero for $S$ and
+  $\Theta$, so we ignore it for the remainder.
 
 \end{itemize}
 
@@ -388,8 +403,8 @@ and $\Theta$, so we ignore it for the remainder.
 
 \begin{exampleblock}{}
  
-The process method consists of estimating the following volume
-integral
+  In the absence of interiors sources, the process method consists of
+  estimating the following volume integral
 \begin{equation*}
  G(\lambda) 
  = 
@@ -399,7 +414,7 @@ integral
 =
 \lim_{\delta \lambda \rightarrow 0}
  \frac{1}{\delta \lambda}
- \int_{\Omega(\lambda \pm \delta \lambda/2)} [-\nabla \cdot {\bm J} ] \, \mathrm{d}V.
+ \int_{\Omega(\lambda \pm \delta \lambda/2)} [-\nabla \cdot {\bm J} ] \, \mathrm{d}V
 \end{equation*}
 
 \end{exampleblock}
@@ -412,7 +427,7 @@ mixing term plus surface boundary fluxes
   + \underbrace{ {\bm J}_{\mbox{\tiny out}} \cdot \hat{\bm n} \, \delta (z-\eta)
       }_{\mbox{\tiny surface boundary fluxes}}
   + \underbrace{ {\bm J}_{\mbox{\tiny bot}} \cdot \hat{\bm n} \, \delta (z-\eta_{\mbox{\tiny b}})
-     }_{\mbox{\tiny bottom boundary processes}}.
+     }_{\mbox{\tiny bottom boundary processes}}
 \end{equation*}
 \begin{multline*}
  G(\lambda)
@@ -437,7 +452,7 @@ mixing term plus surface boundary fluxes
  \frac{1}{\delta \lambda}
  \left[ \int_{\partial \Omega_{\mbox{\tiny  bot}} (\lambda \pm \delta \lambda/2)} 
 {\bm J}_{\mbox{\tiny bot}} \cdot \hat{\bm n} \, \mathrm{d}\mathcal{S}
-  \right].
+  \right]
  }_{\mbox{\tiny bottom transformation = area integral of bottom fluxes}}
 \end{multline*}
 
@@ -445,12 +460,12 @@ mixing term plus surface boundary fluxes
 \item[$\star$] The first term on the right hand side is the binned tendency from
 interior processes such as mixing and shortwave heating.  
 
-\item[$\star$] The second term is the binned non-advective surface
-transport and third is binned non-advective bottom transport.  
-
 \item[$\star$] {\it Interior} refers to anything not arising from
   fluxes crossing $z=\eta$ or $z-\eta_{\mbox{\tiny b}}$.  Hence, it
-  includes strong boundary layer misxing processes.
+  includes strong boundary layer mixing processes.
+
+\item[$\star$] The second term is the binned non-advective surface
+transport and third is binned non-advective bottom transport.  
 
 \end{itemize}
 
