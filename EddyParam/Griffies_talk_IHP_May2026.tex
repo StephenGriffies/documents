@@ -529,8 +529,7 @@ transport.
   \item[$\bullet$] $\mathbb{A}$: skew-diffusion tensor, parameterizing
     subgrid processes leading to advective fluxes that stir tracers
     that can increase gradients.
-  \item [$\bullet$] The eddy-advection from eddies is related to
-    Stokes' drift
+  \item [$\bullet$] Eddy-advection is related to Stokes' drift
     \parencite{Moffatt1983,MiddletonLoder1989,McDougallMcIntosh2001}.
     
   \end{itemize}
@@ -597,8 +596,8 @@ transport.
 
  \begin{itemize}
       \item[$\star$] Downscale turbulent cascade of tracer variance
-        along along neutral directions leads to the notion of {\bf
-          neutral diffusion}.
+        oriented by buoyancy leads to the notion of {\bf neutral
+          diffusion}.
       \begin{itemize}
       \scriptsize
       \item[$\bullet$] \textcite{Solomon1971}, \textcite{Redi1982},
@@ -641,10 +640,12 @@ transport.
     \footnotesize
     \item[$\star$] Geopotential oriented diffusion is problematic
       particularly in regions of steep neutral directions (e.g., western boundary currents like Gulf Stream).
-     \item[$\star$] Spurious dianeutral diffusivity scales like $A^{\mathsf{\scriptscriptstyle hordif}} \,
-       |{\bm S}|^{2} \approx (10^{-3}$ to
-       $10^{-1})~\mbox{m}^{2}~\mbox{s}^{-1}$ with slope $|{\bm S}|
-       =10^{-3}$ to $10^{-2}$.
+     \item[$\star$] Spurious dianeutral diffusivity scales like
+       $A^{\mathsf{\scriptscriptstyle hordif}} \, |{\bm S}|^{2}
+       \approx (10^{-3}$ to $10^{-1})~\mbox{m}^{2}~\mbox{s}^{-1}$ with
+       slope $|{\bm S}| =10^{-3}$ to $10^{-2}$ and
+       $A^{\mathsf{\scriptscriptstyle hordif}} \approx
+       10^{3}~\mbox{m}^{2}~\mbox{s}^{-1}$.
      \item[$\star$] Western bdy upwelling in the
        \textcite{Holland1971} simulation is due to spurious dianeutral
        mixing from horizontal diffusion:
@@ -740,7 +741,8 @@ transport.
 
 \begin{frame}{Small slope neutral diffusion and boundary regularization}
 
-\begin{itemize}
+  \begin{itemize}
+    \scriptsize 
     \item[$\star$] \textcite{Solomon1971} and \textcite{GM90} wrote
       down the (small neutral slope) diffusive tracer flux, which is
       used by modelers:
@@ -766,10 +768,8 @@ transport.
 \end{equation}
 
  \item[$\bullet$] Regularization is required near boundaries and
-   regions of steep neutral slopes: \textcite{Cox1987},
-   \textcite{GKW91}, \textcite{DanaMcWilliams1995},
-   \textcite{ferrari_mcwilliams2008},
-   \textcite{dana_ferrari_mcwilliams2008}.
+   regions of steep neutral slopes:
+   \textcite{Cox1987,GKW91,DanaMcWilliams1995,ferrari_mcwilliams2008,dana_ferrari_mcwilliams2008,ferrari_griffies_nurser_vallis2010}.
      
 \end{itemize}
 
@@ -875,7 +875,7 @@ transport.
        available potential energy.
      \item[$\bullet$] The overturning circulation retains the census
        of water properties within buoyancy layers, rather than mixing
-       across layers.
+       across layers (``adiabatic'' in ocean physics jargon).
    \end{itemize}
    
  \item[$\star$] \textcite{GM95} proposed a closure for the circulation
@@ -895,9 +895,7 @@ transport.
 \caption{Secondary overturning circulation, ${\bm \Psi}$, arising from
   the \textcite{GM95} eddy-induced parameterization for a southern
   hemisphere front.  This circulation acts to restratify the density,
-  thus reducing the available potential energy.  The restratification
-  retains density within their layers (``adiabatic'' in ocean
-  jargon).}
+  thus reducing the available potential energy.}
 \end{figure}
 
 \end{frame}
@@ -962,8 +960,9 @@ transport.
 
 \begin{itemize}
 
-\item[$\star$] \textcite{GriffiesSkew}: combining the \cite{GM95} scheme 
-  + small angle neutral diffusion 
+\item[$\star$] Combining the \cite{GM95} scheme as a
+  \textcite{GriffiesSkew} skew-diffusion, plus including small angle
+  neutral diffusion, yields the subgrid scale transport tensor
   \begin{multline}
  \mathbb{A}^{\mathsf{\scriptscriptstyle skew}} + \mathbb{K}^{\mathsf{\scriptscriptstyle small}}
  =
@@ -991,7 +990,7 @@ transport.
       \footnotesize 
      \item[$\bullet$] Horizontal tracer fluxes reduce to downgradient
        horizontal diffusion.
-       \item[$\bullet$] Greatly simplified the model implementation.
+       \item[$\bullet$] Greatly simplifies the model implementation.
    \end{itemize} 
 
 \item[$\star$] However, further research pointed to fundamental
@@ -1116,10 +1115,9 @@ transport.
 \begin{frame}{Further related research}
 
 
-Research into mesoscale eddy parameterizations remains an active,
-challenging, and exciting area.  Here are a few areas that were either
-briefly mentioned or not mentioned at all. Warning: this is an
-incomplete list!
+Research into mesoscale eddy parameterizations remains an active and
+challenging area.  In addition to those topics mentioned earlier, here
+are a few others. Warning: this is an incomplete list!
 
 \begin{itemize}
 
@@ -1164,7 +1162,7 @@ incomplete list!
    synergy between physics, maths, and numerics.
   \begin{itemize}
   \scriptsize 
-  \item[$\bullet$] No one approach is sufficient nor more important.
+  \item[$\bullet$] No one approach is sufficient nor more or less important.
   \item[$\bullet$] Collaboration is needed, though with a strong dose
     of individual creative (and obsessive) passion to open up new
     avenues that break from the crowd.
