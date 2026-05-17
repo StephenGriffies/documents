@@ -1,0 +1,1514 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{color}
+\usepackage{array}
+\usepackage{enumitem}
+
+%%%%%%%%%%%%%%%%
+\newcommand{\rhoo}{\rho\mkern-2mu_{\mathsf{\scriptscriptstyle o}}}
+\newcommand{\ho}{h_{\mathsf{\scriptscriptstyle o}}}
+\newcommand{\vo}{v_{\mathsf{\scriptscriptstyle o}}}
+\newcommand{\nablah}{\nabla\mkern-5mu_{\mathsf{\scriptscriptstyle h}}}
+%%%%%%%%%%%%%%%%
+
+
+%%citations%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\setbeamerfont{bibliography entry note}{size=\tiny}
+\usepackage[T1]{fontenc}    % Fixes the underscore/dot and French accents
+
+\usepackage[
+    backend=biber,
+    style=ext-authoryear,
+    articlein=false,    % <--- This specifically removes "In:" for @article
+    % --- IN-TEXT CITATION SETTINGS ---
+    maxcitenames=2,   % Use "et al." if there are more than 2 authors
+    mincitenames=1,   % When truncating, show only the 1st author
+    % --- BIBLIOGRAPHY (SLIDE) SETTINGS ---
+    maxbibnames=99,   % Show up to 99 authors (essentially all)
+    minbibnames=1,    % Fallback if a list is somehow longer than 99
+    backref=true,      % <--- Enables "back to text" links
+    uniquelist=false,  % Keeps "et al." consistent even with similar entries
+    giveninits=true,   % <--- This produces "Griffies, S. M."
+]{biblatex}
+
+\renewcommand*{\bibfont}{\footnotesize} % Or \scriptsize if you're desperate
+\DefineBibliographyStrings{english}{%
+  backrefpage = {cited on page},
+  backrefpages = {cited on pages},
+}
+
+\setlength{\bibitemsep}{0pt}  % Space between different entries
+\setlength{\bibparsep}{0pt}   % Space between paragraphs within an entry
+
+
+%\bibliography{Griffies_book_refs}
+\addbibresource{./../../../../../Princeton_University/courses/Princeton_AOS/GFM_book/Griffies_book_refs.bib}
+
+
+% --- BEAMER SPECIFIC CLEANUP ---
+% This removes the "document/article" icon in the bibliography
+\setbeamertemplate{bibliography item}{}
+
+% This makes the font size smaller for bibliography slides
+\setbeamerfont{bibliography entry author}{size=\scriptsize}
+\setbeamerfont{bibliography entry title}{size=\scriptsize}
+\setbeamerfont{bibliography entry location}{size=\scriptsize}
+\setbeamerfont{bibliography entry note}{size=\scriptsize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\hypersetup{
+    colorlinks=true,   % Colors the text instead of drawing a box
+    citecolor=blue,    % Makes "Haine et al 2025" blue and clickable
+    linkcolor=black,   % Keeps internal links (like TOC) black and clean
+    urlcolor=blue      % Keeps web links blue
+}
+
+\definecolor{darkblue}{rgb}{0,0,0.5} % Professional navy for your slides
+
+
+%
+% Choose how your presentation looks.
+%
+% For more themes, color themes and font themes, see:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+%
+\mode<presentation>
+{
+  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+  \setbeamertemplate{footline}[frame number]
+} 
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+
+
+% to center the title to each slide 
+\setbeamertemplate{frametitle}{
+    \begin{centering}
+        \insertframetitle\par
+        \insertframesubtitle\par
+    \end{centering}
+}
+
+
+% Sets the "Figure XX" part
+\setbeamerfont{caption name}{size=\scriptsize}
+% Sets the actual text of the caption
+\setbeamerfont{caption}{size=\scriptsize}
+
+\usepackage[skip=1pt]{caption}
+
+\newcommand{\term}[1]{{\rmfamily\scshape #1}}
+
+\setbeamerfont{frametitle}{size=\normalsize, series=\mdseries, family=\sffamily}
+
+\AtBeginSection[]
+{
+  \begin{frame}{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{A primer on the ocean mesoscale and its parameterization in
+  circulation models \\
+  \vspace{.2cm}
+  \small Sampling the physics/maths/numerics (with a focus on tracers)}
+\author{\small stephen.griffies@locean.ipsl.fr \\ 
+  smg@princeton.edu \\
+  stephen.m.griffies@gmail.com}
+\institute{CNRS IPSL/LOCEAN + Princeton University}
+\date{Talk given 18 May 2026 at the Institut Henri {Poincar\'{e}} workshop: \\ {\it Instabilities and Transitions in Geophysical Flows}
+
+\vspace{1cm}
+\centering
+\includegraphics[width=.5\textwidth]{FIGS/ParisPrincetonLogos.pdf}
+  
+}
+
+
+\begin{document}
+
+\small 
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% --- Table of Contents Slide ---
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction and motivation}
+
+\begin{frame}{Audiences for this talk}
+
+\begin{itemize}
+
+\item[$\star$] Mathematical analysts interested in the physics of
+  subgrid scale parameterizations used in ocean circulation models:
+  \begin{itemize}
+  \item[$\bullet$] {\bf Physics informing the maths.}
+  \item[$\bullet$] For example, see \textcite{KornTiti2024}. 
+  \end{itemize}
+  
+\item[$\star$] Physical analysts interested in the mathematical
+  expression of subgrid scale operators used in circulation models:
+    \begin{itemize}
+     \item[$\bullet$] {\bf Maths informing the physics.}
+    \end{itemize}
+
+  \item[$\star$] Numerical analysts interested in realizing subgrid
+    scale operators in circulation models.
+    \begin{itemize}
+     \item[$\bullet$] {\bf Numerics realizing the maths and physics.}
+    \end{itemize}
+
+\end{itemize}
+
+
+\end{frame}
+
+
+\begin{frame}{Ocean mesoscale focus of this talk}
+
+  
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{FIGS/SUOMI_GulfStream.pdf}
+%\includegraphics[width=.4\textwidth]{FIGS/Southern_ocean_speed.jpg}
+%\includegraphics[width=.3\textwidth]{FIGS/CM2.6_SPEED_ICE_2000528_NA_MILLER.png}
+
+%\caption{\scriptsize Ocean surface speed from a global climate model
+%  (GFDL/CM2.6) with roughly 5~km horizontal grid spacing in the
+%  Southern Ocean \parencite{Griffies_etal_CM2p6_heat}.}
+\caption{\scriptsize Surface image in North Atlantic from the
+  NASA-NOAA SUOMI-NPP weather satellite, with Gulf Stream and
+  associated mesoscale eddies, along with submesoscale fronts and
+  eddies, highlighted by phytoplankton pigments. Image available from
+  https://www.nasa.gov/image-article/turbulent-north-atlantic/.}
+\end{figure}
+
+We here focus on the ocean mesoscale, which is characterized by
+     \begin{itemize}
+       \footnotesize
+     \item[$\bullet$] Small Rossby number (rotationally dominant)
+     \item[$\bullet$] Large Richardson number (strong vertical stratification)  
+     \item[$\bullet$] Quasi-geostrophy (flow scales $L \approx
+       \mathcal{O}(L_{d})$) and planetary geostrophy (flow scales $L
+       \gg \mathcal{O}(L_{d})$) inform the parameterizations ($L_{d} =
+       N \, H/f$ is the deformation scale).
+    \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Perspective (or perhaps, an apology)}
+
+\begin{itemize}
+
+\item[$\star$] Mesoscale eddy parameterizations (and by extension,
+  ocean eddies) are central to the ocean's role in the climate system:
+  \begin{itemize}
+    \footnotesize
+  \item[$\bullet$] Ocean heat uptake is affected by turbulent motions,
+    with $\approx 90\%$ anthropogenic heat absorbed by the ocean.
+  \item[$\bullet$] Ocean carbon uptake is also affected by turbulent
+    motion, with ocean accounting for $\approx 25\%$ of carbon budget.
+  \item[$\bullet$] Sea level rise (thermosteric expansion + melting ice shelves) 
+  \item[$\bullet$] Climate mean, variability, stability, and
+    sensitivity to $CO_2$ increases.
+  \end{itemize}
+
+  
+\item[$\star$] Practical problems related to ocean eddy
+  parameterizations occupy the attention of many ocean theorists and
+  model developers.
+    \begin{itemize}
+  \footnotesize
+   \item[$\bullet$] Eddy parameterizations aim to encapsulate physics
+     in a closed mathematical form, allowing for mathematical analysis
+     and numerical experimentation.
+   \item[$\bullet$] There is a trend in the community towards
+     efficient and accurate dynamical cores, coupled to better
+     computer hardware, that aspire to resolve ocean mesoscale eddies,
+     rather than parameterize.
+    \item[$\bullet$] Even so, parameterizations offer an effective way
+      to engage a broad suite of scientists and mathematicians into
+      the study of ocean circulation and the tole of ocean turbulence
+      in climate.
+  \end{itemize}
+
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{How this talk fits into the workshop theme}
+
+\begin{itemize}
+
+\item[$\star$] Ocean turbulence is initiated by instabilities, such as
+  baroclinic, symmetric, and Kelvin-Helmholtz (shear).
+
+\item[$\star$] This talk is mostly concerned with parameterizing the
+  effects from {\bf ocean mesoscale turbulence} (geostrophic
+  turbulence) in a rotating and stratified ocean.
+
+\item[$\star$] Ocean mesoscale turbulence is directly related to
+  baroclinic instability, with secondary instabilities arising from
+  shear instability.
+
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FIGS/instabilityGiants.pdf}
+\caption{\scriptsize Pioneers of fluid instabilities central to the varieties of
+  ocean turbulence.}
+\end{figure}
+
+
+\end{frame}
+
+
+\section{Physical phenomenology of ocean mesoscale flows}
+
+
+\begin{frame}{Ocean circulation: horizontal and vertical}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FIGS/circulation_images.pdf}
+\caption{\scriptsize Left: schematic of the horizontal ocean
+  circulation patterns from Lynn Talley. Center: meridional-vertical
+  overturning circulation, with Antarctica at the center
+  \parencite{Talley2013}.  Right: neutral density (buoyancy) section
+  in Pacific \parencite{Wunsch_Ferrari2004}.}
+\end{figure}
+
+Selected features of the ocean circulation:
+      \begin{itemize}
+      \scriptsize
+      \item[$\star$] Broad horizontal gyre circulations coupled to the
+      Antarctic Circumpolar Circulation.
+    \item[$\star$] Overturning cells, connecting in the deep Southern
+      Ocean and with the North Atlantic having the only deep
+      penetration in the northern hemisphere.
+    \item[$\star$] Buoyancy is characterized by light water above
+      heavy, which provides a resistance to vertical motion and
+      affects properties of ventilation (vertical transfer of
+      tracers), waves, and eddies.
+      \end{itemize}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Multiscale pathways of ocean flows}
+
+\vspace{-.3cm}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FIGS/Pathways-Roy.pdf}
+\caption{\scriptsize Multiscale pathways of ocean flows from the
+  review by \textcite{Aluie_etal2026}.}
+\end{figure}
+
+\begin{itemize}
+
+  \item[$\star$] The mesoscales are among a wide suite of multi-scale
+    ocean motions, with a transfer of mechanical energy between these
+    motions indicative of coupling across scales.
+
+\item[$\star$] Developing a theoretical and phenomenological
+  understanding of these flows, and their interactions, is a goal of
+  ocean physics.
+  
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Ocean energetics across scales}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FIGS/ARFM_spectra.pdf}
+\caption{\scriptsize Kinetic energy spectra of surface ocean
+  geostrophic flow in the global ocean, computed from AVISO
+  (satellite) and GLORYS (reanalysis) via coarse-graining:
+  \textcite{Storer_etal2022,Storer_etal2023,Buzzicotti_etal2023,Aluie_etal2026}.}
+\end{figure}
+
+
+\vspace{-.3cm}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FIGS/Storer_etal_cascade_map.pdf}
+\caption{\scriptsize Kinetic energy transfer from the GLORYS ocean
+  product ($1/12^{\circ}$ NEMO model), from
+  \textcite{Storer_etal2022}.  Blue means energy transfer to large
+  scales, and red to small scales.}
+\end{figure} 
+
+\end{frame}
+
+
+
+
+
+\section{Mathematical description of eddy tracer transport}
+
+\begin{frame}{Dynamical core + subgrid scale parameterizations}
+
+ Equations of an ocean model:
+\begin{subequations}
+ \begin{align}
+   \frac{\mathrm{D}{\bm v}}{\mathrm{D}t}
+   +
+   2 \, {\Omega} \times {\bm v}
+   &=
+   -\nabla \Phi
+   +
+   \rho^{-1} \, (-\nabla p +  \color{red} \nabla \cdot \mathbb{T} \color{black})
+  \\
+  \color{red} \nabla \cdot \mathbb{T} \color{black}
+  &= \text{\footnotesize divergence of subgrid stresses} 
+    \\
+  \rho \, \frac{\mathrm{D}C}{\mathrm{D}t} &= \color{red}  -\nabla \cdot {\bm J} \color{black} 
+  \\
+  \color{red} -\nabla \cdot {\bm J} \color{black}
+  &= \text{\footnotesize convergence of subgrid tracer fluxes} 
+ \end{align}
+\end{subequations}
+
+\begin{itemize}
+\item[$\star$] Dynamical core
+  \begin{itemize}
+    \footnotesize
+  \item[$\bullet$] That part of the model concerned with numerically
+    representing the flow on the discrete grid (material time changes,
+    Coriolis, gravity, pressure gradient).
+  \end{itemize}
+\item[$\star$] \color{red} Subgrid scale (eddy) parameterizations
+  \color{black}
+  \begin{itemize}
+     \footnotesize 
+   \item[$\bullet$] Closure theories that aim to parameterize impacts
+     on the resolved flow from processes that live at scales smaller
+     than the discrete grid.
+     \item[$\bullet$] In a circulation model, the subgrid scale is
+       operationally defined by the grid size.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Advection-diffusion equation for source-free (conservative) tracers}
+
+\begin{itemize}
+
+\item[$\star$] Boussinesq\footnote{The compressible (non-Boussinesq)
+equations require only modest conceptual generalizations beyond the
+Boussinesq ocean considered here.  Note that $\rhoo$ is the prescribed
+reference density.} tracer advection-diffusion equation
+\begin{equation}
+    \partial_{t} C  + \nabla \cdot ( {\bm v} \, C)
+    = -\nabla \cdot {\bm F} \quad \mbox{and} \quad \nabla \cdot {\bm v} = 0
+    \quad \mbox{and} \quad {\bm J} = \rhoo \, {\bm F}.
+\end{equation}
+
+\item[$\star$] Subgrid scale (SGS) flux vector, ${\bm F}$, is written
+  in terms of a second order transport tensor, $\mathbb{J}$, projected
+  onto the tracer gradient
+\begin{equation}
+  {\bm F}  = -\mathbb{J} \cdot \nabla C
+  \Longrightarrow
+  -\nabla \cdot {\bm F} = \nabla \cdot (\mathbb{J} \cdot \nabla C). 
+\end{equation}
+
+\item[$\star$] Decompose the subgrid tracer transport tensor into two
+  components: (i) positive and symmetric tensor, $\mathbb{K}$, and
+  (ii) anti(skew)-symmetric tensor, $\mathbb{A}$
+  \begin{subequations}
+    \begin{alignat}{2}
+    \mathbb{J} &=  \tfrac{1}{2} (\mathbb{J} + \mathbb{J}^{T})
+     + \tfrac{1}{2} (\mathbb{J} - \mathbb{J}^{T})
+     \quad &&\mbox{decompose} 
+     \\
+     \mathbb{K} &\equiv \tfrac{1}{2} (\mathbb{J} + \mathbb{J}^{T}) =  \mathbb{K}^{T}
+     \quad &&\mbox{diffusion}
+     \\ 
+     \mathbb{A} &\equiv \tfrac{1}{2} (\mathbb{J} - \mathbb{J}^{T}) = -\mathbb{A}^{T}
+          \quad &&\mbox{skew-diffusion / advection.}
+    \end{alignat}
+  \end{subequations}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Distinguishing passive tracers and active tracers}
+
+\begin{itemize}
+
+\item[$\star$] {\bf Dynamically passive tracers}:
+  concentration, $C$.
+  \begin{itemize}
+   \item[$\bullet$] Advection-diffusion equation is linear, with fluid
+     flow (${\bm v}$) and mixing tensor ($\mathbb{J}$) independent of
+     the tracer concentration, $C$.
+    \item[$\bullet$] Admits a Green's function solution
+      \parencite{Haine_etal2025}, for use in diagnosing tracer
+      timescales, ventilation pathways, ideal age.
+   \end{itemize}
+  
+
+\item[$\star$] {\bf Dynamically active tracers}: (Conservative
+  Temperature, $\Theta$, and salinity, $S$)
+  \begin{itemize}
+  \item[$\bullet$] Advection-diffusion equation is nonlinear, with the
+    flow and the mixing tensor a function of temperature and salinity.
+  \item[$\bullet$] Special care is needed when numerically realizing
+    the subgrid scale transport tensor, to avoid nonlinear
+    instabilities such as those identified by
+    \textcite{GriffiesIsoneutral}.
+  \item [$\bullet$] The associated mathematical well-posedness
+    analysis is particularly tricky \parencite{KornTiti2024}.
+  \end{itemize}
+  
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Two basic types of eddy tracer transport: stirring and mixing}
+
+The symmetric/anti-symmetric decomposition of the tracer transport
+tensor reflects two kinematically distinct forms of eddy tracer
+transport.
+
+\begin{figure}  
+\centering
+\includegraphics[width=.65\textwidth]{FIGS/Welander_stir_mix.pdf}
+\caption{\scriptsize Schematic from \textcite{Welander1955}
+  illustrating the enhanced gradients from advection, thus exposing
+  tracer concentration to mixing from molecular diffusion. See also
+  \textcite{Eckart1948,MullerGarrett2002,Garrett2006}.}
+\end{figure}
+
+
+\begin{itemize}
+  %\scriptsize 
+  \item[$\bullet$] $\mathbb{K}$: diffusion tensor, parameterizing
+    subgrid processes leading to irreversible downscale mixing that
+    reduces tracer gradients (dissipation).
+  \item[$\bullet$] $\mathbb{A}$: skew-diffusion tensor, parameterizing
+    subgrid processes leading to advective fluxes that stir tracers
+    that can increase gradients.
+  \item [$\bullet$] The eddy-advection from eddies is related to
+    Stokes' drift
+    \parencite{Moffatt1983,MiddletonLoder1989,McDougallMcIntosh2001}.
+    
+  \end{itemize}
+  
+  
+\end{frame}
+
+ 
+\section{Mesoscale eddy diffusion and advection in a stratified ocean}
+
+\begin{frame}{Neutral and dianeutral orientation of tracer fluxes}
+
+  Ocean tracer transport is characterized according to whether it is
+  dominantly dianeutral (e.g., small scale turbulence) or neutral
+  (e.g., mesoscale/geostrophic turbulence).
+
+\begin{figure}  
+\centering
+\includegraphics[width=.5\textwidth]{FIGS/small_scale_diffusion.pdf}
+\caption{\scriptsize Schematic from \textcite{McDougall_etal_geometry}.}
+\end{figure}
+
+\begin{equation}
+  \footnotesize 
+  \text{neutral slope} =
+       {\bm S} = 
+     -\left[ 
+      \frac{-\alpha \, \nablah \Theta + \beta \, \nablah S}
+      {\alpha \, \partial_{z} \Theta + \beta \, \partial_{z}S }
+      \right]
+     \quad 
+     \alpha = -\frac{1}{\rho}\frac{\partial \rho}{\partial \Theta}
+     \quad
+     \beta = \frac{1}{\rho}\frac{\partial \rho}{\partial S}.    
+\end{equation}
+
+
+
+\begin{itemize}
+\item[$\star$] Dianeutral = transport across buoyancy surfaces
+  \begin{itemize}
+    \footnotesize
+  \item[$\bullet$] Commonly approximated by vertical diffusion. 
+  \end{itemize}
+  
+\item[$\star$] Neutral = transport along buoyancy surfaces (neutral
+  directions)
+   \begin{itemize}
+     \footnotesize
+   \item[$\bullet$] Rotation of the diffusive fluxes to align with
+    neutral directions.
+  \end{itemize}
+  \item[$\star$] For large-scale transport parameterized by diffusion,
+   ratio of dianeutral to neutral diffusivities  is
+   $10^{-8}$ in ocean interior.
+\end{itemize}
+
+      
+\end{frame}
+
+
+
+\begin{frame}{Key paradigm: neutral diffusion + secondary circulation}
+
+ \begin{itemize}
+      \item[$\star$] Downscale turbulent cascade of tracer variance
+        along along neutral directions leads to the notion of {\bf
+          neutral diffusion}.
+      \begin{itemize}
+      \scriptsize
+      \item[$\bullet$] \textcite{Solomon1971}, \textcite{Redi1982},
+        \textcite{GriffiesIsoneutral},
+        \textcite{McDougall_etal_geometry}
+      \end{itemize}
+        
+    \item[$\star$] Baroclinic eddies reduce available potential energy
+      (restratify) via a secondary overturning circulation. Effects on
+      tracers are parameterized by an {\bf eddy advection} or {\bf
+        skew diffusion}.
+     \begin{itemize}
+      \scriptsize
+    \item[$\bullet$] \textcite{GM90}, \textcite{GM95},
+      \textcite{GriffiesSkew}
+      \end{itemize}
+    
+    \end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width=.5\textwidth]{FIGS/GentMcWilliamsEffect_and_neutral_diffusion.pdf}
+\caption{\scriptsize Schematic of the neutral diffusion process
+  (mixing along neutral directions) and the Gent-McWilliams effect
+  (restratification of density via a secondary circulation that
+  reduces available potential energy).}
+\end{figure}
+
+\end{frame}
+
+
+
+
+\section{Neutral diffusion: parameterization of eddy-induced tracer mixing}
+
+
+\begin{frame}{\textcite{Veronis1975}: serious problems with geopotential diffusion}
+
+  \begin{itemize}
+    \footnotesize
+    \item[$\star$] Geopotential oriented diffusion is problematic
+      particularly in regions of steep neutral directions (e.g., western boundary currents like Gulf Stream).
+     \item[$\star$] Spurious dianeutral diffusivity scales like $A^{\mathsf{\scriptscriptstyle hordif}} \,
+       |{\bm S}|^{2} \approx (10^{-3}$ to
+       $10^{-1})~\mbox{m}^{2}~\mbox{s}^{-1}$ with slope $|{\bm S}|
+       =10^{-3}$ to $10^{-2}$.
+     \item[$\star$] Western bdy upwelling in the
+       \textcite{Holland1971} simulation is due to spurious dianeutral
+       mixing from horizontal diffusion:
+       $w \, \partial_{z} \rho = A^{\mathsf{\scriptscriptstyle hordif}}
+       \, \partial_{xx}\rho$.
+
+  \item[$\star$] This unphysical circulation is known as the "Veronis
+    Effect".
+    %\footnote{\scriptsize Veronis acknowledged Henry Stommel
+    %for the key insight: "{\it In a discussion about the Holland
+    %  (1971) model, H. Stommel pointed out to me the effective
+    %  vertical [dianeutral] diffusion associated w/ horizontal mixing
+    %  along level surfaces.}"}
+    
+  \end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width=.75\textwidth]{FIGS/rm98_figure2.pdf}
+\caption{\scriptsize \textcite{RobertsMarshall1998} schematic of the
+  Veronis Effect.}
+\end{figure}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Neutral diffusion}
+
+\begin{itemize}
+    \item[$\star$] \textcite{Redi1982} proposed the following neutral
+      diffusion flux
+      \begin{equation}
+        {\bm F}^{\mathsf{\scriptscriptstyle redi}} =
+       -\mathbb{K}^{\mathsf{\scriptscriptstyle redi}} \cdot \nabla C =
+      -\frac{A^{\mathsf{\scriptscriptstyle ndif}} }{1+S^{2}} 
+ \left[ \begin{array}{ccc}
+ 1 + S_{y}^{2} 
+ &
+ -S_{x}S_{y}
+ &
+ S_{x}
+ \\
+ -S_{x}S_{y}
+ &
+ 1 + S_{x}^{2} 
+ &
+ S_{y}
+ \\
+ S_{x}
+ &
+ S_{y}
+ &
+ S^{2}
+\end{array} 
+   \right]
+  \left[
+        \begin{array}{c}
+          \partial_{x}C  \\
+          \partial_{y}C  \\
+          \partial_{z}C
+      \end{array}
+        \right]
+\label{eq:redi-full-tensor}
+\end{equation}
+
+\item[$\star$] Projection operator form \parencite{Olbersetal1985} is
+  more intuitive:
+\begin{equation}
+    \mathbb{K}^{\mathsf{\scriptscriptstyle redi}}
+    = A^{\mathsf{\scriptscriptstyle ndif}} \, (\mathbb{I}  - \hat{\gamma} \otimes \hat{\gamma})
+    \qquad 
+    \hat{\bm \gamma} = 
+     \frac{-\alpha \nabla \Theta + \beta \nabla S}
+          {|-\alpha \nabla \Theta + \beta \nabla S|}.
+\end{equation}
+
+\begin{figure}
+\centering
+\includegraphics[width=.5\textwidth]{FIGS/neutral_diffusion.pdf}
+\caption{\scriptsize Schematic of the neutral diffusion process. The
+  downgradient neutral diffusive fluxes are oriented along neutral
+  directions.}
+\end{figure}
+
+\end{itemize}
+
+
+
+\end{frame}
+
+
+\begin{frame}{Small slope neutral diffusion and boundary regularization}
+
+\begin{itemize}
+    \item[$\star$] \textcite{Solomon1971} and \textcite{GM90} wrote
+      down the (small neutral slope) diffusive tracer flux, which is
+      used by modelers:
+      \begin{equation}
+        \small 
+      {\bm F} =
+       -\mathbb{K}^{\mathsf{\scriptscriptstyle small}} \cdot \nabla C =
+      -A^{\mathsf{\scriptscriptstyle ndif}}
+      \left[
+        \begin{array}{ccc}
+          1 & 0 & S_{x} \\
+          0 & 1 & S_{y} \\
+          S_{x} & S_{y} & 0
+      \end{array}
+        \right]
+      \left[
+        \begin{array}{c}
+          \partial_{x}C  \\
+          \partial_{y}C  \\
+          \partial_{z}C
+      \end{array}
+        \right].
+\end{equation}
+
+ \item[$\bullet$] Regularization is required near boundaries and
+   regions of steep neutral slopes: \textcite{Cox1987},
+   \textcite{GKW91}, \textcite{DanaMcWilliams1995},
+   \textcite{ferrari_mcwilliams2008},
+   \textcite{dana_ferrari_mcwilliams2008}.
+     
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{FIGS/Ferrari_etal2008.pdf}
+\caption{\scriptsize Neutral diffusion near surface boundary from
+  \textcite{ferrari_mcwilliams2008}. As eddies encounter the boundary,
+  they can only mix horizontally rather than along neutral directions.
+  Regularization involves tapering to zero the off-diagonal terms in
+  the diffusion tensor. Regularization manifests physics while
+  supporting numerical stability.}
+\end{figure}
+
+
+\end{frame}
+
+
+\begin{frame}{Numerical/physical details are crucial}
+
+\begin{itemize}
+         \footnotesize
+         \item[$\star$] Potential for a nonlinear instability when
+           diffusing temperature and salinity: nonlinear diffusion can
+           rip the density surfaces apart if not careful.
+
+         \item[$\star$] Nonlinear numerical instability is removed if
+           the numerical realization satisfies the neutrality
+           condition: $\alpha \, {\bm F}(\Theta) = \beta \, {\bm
+             F}(S)$ \parencite{GriffiesIsoneutral}.
+           
+%       \item [$\star$] We generally cannot ensure positive-definite
+%         tracer concentration with local fluxes:
+%         \textcite{GriffiesIsoneutral}, \textcite{Beckersetal1998},
+%         \textcite{Gnanadesikan1999c}, \textcite{Lemarie_etal2012b},
+%         \textcite{Groeskamp_slopes2019}.
+         
+%         \item [$\star$] Yet non-local fluxes in the
+%           \textcite{Shao_etal_2020} scheme ensure
+%           positive-definiteness of the rotated diffusion.
+      
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\textwidth]{FIGS/GGPLDS_fig6_9.pdf}
+\caption{\scriptsize From \textcite{GriffiesIsoneutral}: left panel
+  shows triad stencil for neutral diffusive fluxes arising from a
+  functional discretization; right panel illustrates the nonlinear
+  numerical instability realized by the \textcite{Cox1987} method and
+  remedied by \textcite{GriffiesIsoneutral}.}
+\end{figure}
+
+
+\end{frame}
+
+
+\begin{frame}{Refinements to numerical neutral diffusion over the years}
+
+\begin{itemize}
+
+\item[$\star$] \textcite{Beckersetal1998,Beckers2000} advanced a
+   no-go theorem, stating that any linear, consistent, local
+   implementation of rotated diffusion can produce extrema.
+   \begin{itemize}
+     \scriptsize 
+     \item[$\bullet$] There are no locally downgradient rotated
+       diffusive fluxes on a lattice.
+   \end{itemize}
+   
+ \item[$\star$] \textcite{Lemarie_etal2012a,Lemarie_etal2012b}
+   suggested a biasing of \textcite{GriffiesIsoneutral} triad scheme
+   to reduce extrema.
+
+ \item[$\star$] \textcite{Groeskamp_slopes2019,Shao_etal_2020}
+   developed a non-local method that ensures local downgradient
+   properties and thus removes extrema.
+
+\end{itemize}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.7\textwidth]{FIGS/lemarie.pdf}
+\end{figure}
+
+\end{frame}
+
+
+
+\section{Gent-McWilliams effect: parameterization of eddy induced restratification}
+
+
+\begin{frame}{The \textcite{GM95} eddy parameterization}
+
+\begin{itemize}
+
+\item[$\star$] \textcite{GM90,GM95} noted that mesoscale eddies do
+  more than diffuse!
+   \begin{itemize}
+     \scriptsize 
+     \item[$\bullet$] Eddies support a secondary overturning
+       circulation that restratifies the flow as it reduces the
+       available potential energy.
+     \item[$\bullet$] The overturning circulation retains the census
+       of water properties within buoyancy layers, rather than mixing
+       across layers.
+   \end{itemize}
+   
+ \item[$\star$] \textcite{GM95} proposed a closure for the circulation
+   in terms of an eddy-induced streamfunction
+   \begin{equation}
+     {\bm \Psi} = A^{\mathsf{\scriptscriptstyle gm}} \, \hat{\bm z} \times {\bm S}
+     \qquad
+         {\bm v}^{*} = \nabla \times {\bm \Psi}
+         = -\partial_{z}(A^{\mathsf{\scriptscriptstyle gm}} \, {\bm S})
+         \  + \hat{\bm z} \, \nabla \cdot (A^{\mathsf{\scriptscriptstyle gm}} \, {\bm S}).
+   \end{equation}
+   
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=.55\textwidth]{FIGS/GentMcWilliamsEffect.pdf}
+\caption{Secondary overturning circulation, ${\bm \Psi}$, arising from
+  the \textcite{GM95} eddy-induced parameterization for a southern
+  hemisphere front.  This circulation acts to restratify the density,
+  thus reducing the available potential energy.  The restratification
+  retains density within their layers (``adiabatic'' in ocean
+  jargon).}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Eddy advection and skew diffusion}
+
+\begin{itemize}
+\item[$\star$] Since the eddy advection velocity is non-divergent,
+  $\nabla \cdot {\bm v}^{*} = 0$, we can realize the tracer transport
+  either via an advection or a skew diffusion
+  \parencite{GriffiesSkew}.
+  \begin{subequations}
+    \scriptsize 
+        \begin{align}
+          {\bm F}^{\mathsf{\scriptscriptstyle adv}}
+          &= (\nabla \times {\bm \Psi}) \, C, \;
+          {\bm F}^{\mathsf{\scriptscriptstyle skew}}
+            = -\nabla C \times {\bm \Psi} 
+          \Longrightarrow 
+            \nabla \cdot {\bm F}^{\mathsf{\scriptscriptstyle adv}}
+            =
+            \nabla \cdot {\bm F}^{\mathsf{\scriptscriptstyle skew}}
+            \\
+ {\bm F}^{\mathsf{\scriptscriptstyle skew}} &=
+       -\mathbb{A}^{\mathsf{\scriptscriptstyle skew}} \cdot \nabla C =
+      -A^{\mathsf{\scriptscriptstyle gm}}
+      \left[
+        \begin{array}{ccc}
+          0 & 0 & -S_{x} \\
+          0 & 0 & -S_{y} \\
+          S_{x} & S_{y} & 0
+      \end{array}
+        \right]
+      \left[
+        \begin{array}{c}
+          \partial_{x}C  \\
+          \partial_{y}C  \\
+          \partial_{z}C
+      \end{array}
+        \right].
+ \end{align}
+\end{subequations}
+
+
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=.75\textwidth]{FIGS/GentMcWilliamsEffect.pdf}
+\caption{Orientation of the \textcite{GM95} circulation, ${\bm \Psi}$,
+  and \textcite{GriffiesSkew} density skew flux, ${\bm
+    F}^{\mathsf{\scriptscriptstyle skew}}$ (downgradient horizontal;
+  upgradient vertical).  Both the circulation and the skew flux
+  flatten the density surfaces, thus reducing available potential
+  energy.}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Combination of neutral diffusion plus skew diffusion}
+
+\begin{itemize}
+
+\item[$\star$] \textcite{GriffiesSkew}: combining the \cite{GM95} scheme 
+  + small angle neutral diffusion 
+  \begin{multline}
+ \mathbb{A}^{\mathsf{\scriptscriptstyle skew}} + \mathbb{K}^{\mathsf{\scriptscriptstyle small}}
+ =
+ \\
+ \left[
+  \begin{array}{ccc}
+ A^{\mathsf{\scriptscriptstyle ndif}} & 0 & (A^{\mathsf{\scriptscriptstyle ndif}} - A^{\mathsf{\scriptscriptstyle gm}}) \, S_{x}
+ \\
+ 0 &  A^{\mathsf{\scriptscriptstyle ndif}} & (A^{\mathsf{\scriptscriptstyle ndif}} - A^{\mathsf{\scriptscriptstyle gm}}) \, S_{y}
+ \\
+ (A^{\mathsf{\scriptscriptstyle ndif}} + A^{\mathsf{\scriptscriptstyle gm}}) \, S_{x}
+ &
+ (A^{\mathsf{\scriptscriptstyle ndif}} + A^{\mathsf{\scriptscriptstyle gm}}) \, S_{y}
+ &
+ A^{\mathsf{\scriptscriptstyle ndif}} \, |{\bm S}|^{2}
+ \end{array} 
+ \right].
+ \label{eq:diffusion-plus-gm-skew}
+\end{multline}
+
+\item[$\star$] \textcite{DukSmith1997} suggested that
+  $A^{\mathsf{\scriptscriptstyle ndif}} =
+  A^{\mathsf{\scriptscriptstyle gm}}$.
+  \begin{itemize}
+      \footnotesize 
+     \item[$\bullet$] Horizontal tracer fluxes reduce to downgradient
+       horizontal diffusion.
+       \item[$\bullet$] Greatly simplified the model implementation.
+   \end{itemize} 
+
+\item[$\star$] However, further research pointed to fundamental
+  distinctions.
+  \begin{itemize}
+    \footnotesize
+   \item[$\bullet$] Eddy stirring that leads to neutral diffusive
+     mixing is a distinct process from eddy-induced restratification.
+   \item[$\bullet$] Distinct boundary conditions:
+     \textcite{McDougallMcIntosh2001,ferrari_mcwilliams2008,ferrari_griffies_nurser_vallis2010}.
+   \item[$\bullet$] Distinct diffusivities:
+     \textcite{SmithMarshall2009,Abernathey2013}.
+   \end{itemize} 
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Isopycnal averaging, bolus velocity, and Stokes' drift}
+
+\begin{figure}
+\includegraphics[width=.9\textwidth]{FIGS/stokes_drift.pdf}
+\caption{A single layer of constant density fluid, with resting
+  thickness $h=\ho$ and instantaneous thickness $h=\ho + h'(y,t)$.
+  Sinusoidal undulations in thickness correlate with fluctuations in
+  the meridional velocity, $v' = \vo \, \sin(k \, y - \omega \, t)$}
+\end{figure}
+
+\begin{itemize}
+  
+\item[$\star$] Velocity fluctuates to the right ($v' > 0$) under a
+    positive thickness anomaly ($h' > 0$) and to the left ($v' < 0$)
+    with a negative anomaly ($h' < 0$).
+
+\item[$\star$] The nonzero correlation between $h'$ and $v'$ leads to
+  a Stokes drift, with $\overline{v' \, h'}/\overline{h}$ referred to
+  as the bolus velocity \parencite{Rhines1982}.
+
+\item [$\star$] This of the peristaltic contractions and expansions
+    that move food through the digestive system.
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Eddy form stress and thermal wind shears}
+
+ In a geostrophic flow, horizontal density gradients give rise to
+ vertical {\it thermal wind} shears in the horizontal flow
+\begin{equation}
+  f \, \partial_{z}{\bm u} = -(g/\rhoo) \hat{\bm z} \times \nabla \rho
+  = -N^{2} \, \hat{\bm z} \times {\bm S}  
+  \quad \mbox{with $f = 2 \, \Omega \, \sin(\text{lat})$.}  
+\end{equation}
+
+\vspace{-.25cm} 
+\begin{figure}
+\includegraphics[width=.45\textwidth]{FIGS/thermal_wind_schematic.pdf}
+\caption{Example of thermal wind shear as per the atmospheric jet
+  stream in the northern hemisphere.  The density increases to the
+  north and downward, supporting an eastward vertical shear of the
+  zonal flow.}
+\end{figure}
+
+\begin{itemize}
+  \scriptsize
+  
+\item[$\star$] \textcite{GreatbatchLamb1990}: vertical viscous
+  friction weakens the thermal wind shear, and in so doing reduces
+  baroclinicity: just like \textcite{GM95}!
+
+\item[$\star$] Vertical friction is a simple parameterization of
+  vertical eddy form stress:
+  \textcite{FerreiraMarshall2006,ZhaoVallis2008,Young2012,Loose_etal2023}.
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Closing remarks and further research}
+
+
+\begin{frame}{Summarizing mesoscale eddy restratification + diffusion}
+
+\begin{itemize}
+
+\item[$\star$] \textcite{GM95} eddy-advection + eddy neutral diffusion: mesoscale eddy
+  parameterization appears just in tracer equation
+  \begin{equation}
+    \partial_{t} C + \nabla \cdot [({\bm v} + {\bm v}^{*}) \, C] = \nabla \cdot (\mathbb{K} \cdot \nabla C).
+  \end{equation}
+  
+\item[$\star$] \textcite{GriffiesSkew} eddy skew-diffusion + eddy neutral 
+  diffusion: mesoscale eddy parameterization appears just in tracer
+  equation
+  \begin{equation}
+    \partial_{t} C + \nabla \cdot ({\bm v} \, C) =
+      \nabla \cdot [ (\mathbb{K} + \mathbb{A}^{\mathsf{\scriptscriptstyle skew}})  \cdot \nabla C].
+  \end{equation}
+  
+\item[$\star$] \textcite{GreatbatchLamb1990} + eddy neutral diffusion:
+  parameterized eddies in tracer + velocity equations
+  \begin{subequations}
+    \begin{align}
+    \partial_{t} C + \nabla \cdot ({\bm v} \, C) &= \nabla \cdot (\mathbb{K} \cdot \nabla C)
+      \\
+      \partial_{t} {\bm u} + ({\bm v} \cdot \nabla) {\bm u}
+      + f \, \hat{\bm z} \times {\bm u} &=
+      -(1/\rhoo) \, \nablah p + \partial_{z}(\kappa^{\mathsf{\scriptscriptstyle eddy}} \, \partial_{z}{\bm u}).
+    \end{align}
+  \end{subequations}
+  
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Further related research}
+
+
+Research into mesoscale eddy parameterizations remains an active,
+challenging, and exciting area.  Here are a few areas that were either
+briefly mentioned or not mentioned at all. Warning: this is an
+incomplete list!
+
+\begin{itemize}
+
+  \scriptsize
+  
+\item[$\star$] {\bf Anisotropic diffusion/advection}:
+  \textcite{SmithGent2004,Foxkemper_etal2013,bachman2020diagnosis}
+  pursued laterally anisotropic approaches, with mixing oriented
+  according to the flow.
+
+\item[$\star$] {\bf Relating neutral diffusion and eddy advection}:
+  \textcite{SmithMarshall2009,Abernathey2013}
+
+\item[$\star$] {\bf Energy informed closure}:
+  \textcite{EdenGreat2008,MarshallAdcroft2010,Grooms_etal2025}
+
+\item[$\star$] {\bf Non-Newtonian stresses}:
+  \textcite{AnsteyZanna2017,Bachman_etal2018}
+
+\item[$\star$] {\bf Vorticity/energy informed closure}:
+  \textcite{Marshall_etal2012,Maddison_Marshall2013,Mak_etal2017}
+
+\item[$\star$] {\bf Backscatter for the eddy permitting regime}:
+  \textcite{Jansen_Held_2014,Jansen_etal2015,Juricke_etal2020,Pudig_etal2026}
+
+\item[$\star$] {\bf Vertical structure of the diffusivity}:
+  \textcite{zhang2024role,Yankovsky_etal2024}
+  
+
+\end{itemize}  
+
+\end{frame}
+
+
+
+
+\begin{frame}{Some pointers for early career researchers}
+
+\begin{itemize}
+
+ \item[$\star$] Developing subgrid scale parameterizations requires a
+   synergy between physics, maths, and numerics.
+  \begin{itemize}
+  \scriptsize 
+  \item[$\bullet$] No one approach is sufficient nor more important.
+  \item[$\bullet$] Collaboration is needed, though with a strong dose
+    of individual creative (and obsessive) passion to open up new
+    avenues that break from the crowd.
+  \end{itemize}
+
+\item[$\star$] Read papers and books! 
+  \begin{itemize}
+    \scriptsize
+    \item[$\bullet$] Do not rely on AI to summarize the literature. 
+  \item[$\bullet$] It can be enlightening to see how previous
+    researchers took wrong turns, only to eventually find their way.
+  \item[$\bullet$] Reading is the best training for writing.
+  \end{itemize}
+
+ \item[$\star$] Patience and persistence generally lead to progress.    
+   \begin{itemize}
+     \scriptsize
+     \item[$\bullet$] No theory nor method is beyond being questioned
+       or overturned.     
+     \item[$\bullet$] But be ready for resistence. Many papers that
+       broke new ground were initially rejected or resisted (sometimes
+       for many years).
+  \item[$\bullet$] ``Slow science'' can lead to the biggest
+    breakthroughs and longer lasting results.
+  \end{itemize}    
+  
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Un grand merci aux organisateurs pour leur accueil \`{a} Paris !}
+
+\begin{figure}
+\centering
+\includegraphics[width=.9\textwidth]{FIGS/CM2.6_SPEED_ICE_2000528_NA_MILLER.png}
+\caption{\scriptsize Ocean surface speed from a global climate
+ model (GFDL/CM2.6) with roughly 10~km horizontal grid spacing in
+ the middle-Atlantic Ocean \parencite{Griffies_etal_CM2p6_heat}.}
+\label{fig:CM2p6_NATl_speed}
+\end{figure}
+
+
+
+\end{frame}
+
+\section{References} 
+
+\begin{frame}[allowframebreaks]{References}
+    \printbibliography
+\end{frame}
+
+
+
+\section{Extra slides}
+
+
+\begin{frame}{Buoyancy and associated watermasses orient ocean flows}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=.475\textwidth]{FIGS/WunschFerrariARFM2004_fig1.pdf}
+\hspace{.1cm}
+\includegraphics[width=.475\textwidth]{FIGS/Sverdrup_schematic.pdf}
+\caption{\scriptsize Left: neutral density section in Pacific, from
+  \textcite{Wunsch_Ferrari2004}. Right: Schematic of Southern Ocean
+  circulation from \textcite{SverdrupJohnsonFleming1942}. Note: south
+  is swapped in these two depictions.}
+\end{figure}
+
+Physical processes (e.g., waves, eddies, mixing, circulation) are
+oriented according to buoyancy.
+      \begin{itemize}
+      \scriptsize
+      \item[$\bullet$] \textcite{Montgomery1938},
+        \textcite{Iselin1939}, \textcite{SverdrupJohnsonFleming1942},
+        \textcite{Walin1977}, \textcite{McDougall1987a},
+        \textcite{McDougall_etal_geometry}, \textcite{Tailleux2026}
+      \end{itemize}
+
+
+\end{frame}
+
+
+
+\begin{frame}{The mesoscale part of the ocean physics zoo}
+
+\begin{figure}
+\centering
+\includegraphics[width=.55\textwidth]{FIGS/Fig1_OceanProcSchem_revision3.png}
+\caption{\scriptsize From \textcite{Griffies_Treguier2013}.}
+\end{figure}
+
+We here focus on the ocean mesoscale, which is characterized by
+     \begin{itemize}
+       \footnotesize
+     \item[$\bullet$] Small Rossby number (rotationally dominant)
+     \item[$\bullet$] Large Richardson number (strong vertical stratification)  
+     \item[$\bullet$] Quasi-geostrophy (flow scales $L \approx
+       \mathcal{O}(L_{d})$) and planetary geostrophy (flow scales $L
+       \gg \mathcal{O}(L_{d})$) inform the parameterizations ($L_{d}$
+       is the deformation scale).
+    \end{itemize}
+    
+
+\end{frame}
+
+
+
+
+\begin{frame}{Neutral directions: \textcite{McDougall1987a,McDougall1987b}}
+
+%\begin{figure}
+\begin{center}
+\includegraphics[width=.5\textwidth]{FIGS/Encylcopedia_Neutral_figure4.pdf}
+%\caption{
+\newline 
+{\scriptsize Neutral trajectory and $\gamma^{n}$ surface bounded by
+  $\sigma_{0}$ and $\sigma_{4}$. Atlantic section.  From
+  \textcite{McDougallJackett2009}.}
+%}
+\end{center}
+%\end{figure}
+
+\begin{itemize}
+    \item[$\star$] Importance of local referencing to define neutral
+      directions for rotating the diffusion tensor.
+    
+    \item[$\star$] Neutral orientation empirically justified by small
+      levels of measured dianeutral mixing in the ocean interior
+      \parencite{McDougall_etal_geometry}.
+     \item[$\star$] Further refinement from \textcite{Tailleux2026}.  
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{An aside: neutral helicity: \textcite{McDougallJackett1988}}
+
+%\begin{figure}
+\begin{center}
+\includegraphics[width=.5\textwidth]{FIGS/neutral_helicity.pdf}
+%\caption{
+\newline 
+    {\scriptsize Following a neutral direction around a loop does not
+      return to the same point in space, as first noted by
+      \textcite{McDougallJackett1988}.}
+%}
+\end{center}
+%\end{figure}
+
+\begin{itemize}
+\item[$\star$] Neutral helicity is nonzero for a realistic ocean
+  \begin{equation}
+   \mathcal{H}^{\gamma}  
+   = \beta \, {\cal T} \, \nabla p \cdot (\nabla S \, \times \, \nabla \Theta)
+   \quad \mbox{with} \quad {\cal T} = \beta \, \partial_{p} (\alpha/\beta),
+  \end{equation}
+ where $\mathcal{H}^{\gamma} \ne 0$ produces a helical structure.    
+    
+\item[$\star$] Further work by \textcite{Bennett2019},
+  \textcite{Stanley2019}, \textcite{Stanley_etal2021}, and
+  \textcite{Chatelain_etal2026}.
+
+  
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Griffies et al (1998): remedied problems with Cox scheme}
+
+\begin{itemize}
+ \item[$\star$] Respect neutrality (McDougall 1987) eliminates Cox instability 
+ \begin{equation}
+     \alpha {\bm F}(\Theta) = \beta {\bm F}(S_{A})
+ \end{equation}
+
+ 
+ \item[$\star$] Functional method led to "triad discretization" ensuring the reduction of global variance
+ \begin{align}
+     2 {\cal F} = \int ({\bm F} \cdot \nabla C) \, \mathrm{d}V
+% &= -\frac{1}{2} \int  (\nabla C \cdot \mathbb{K} \cdot \nabla C) \, \mathrm{d}V
+     \le 0 
+%     \\
+    \qquad 
+    \delta {\cal F}/\delta C 
+     = -(\nabla \cdot {\bm F}) \, \mathrm{d}V.
+ \end{align}
+ 
+\item[$\star$] Scheme is stable: requires no horizontal background diffusion. 
+ 
+\begin{center}
+\includegraphics[width=.75\textwidth]{FIGS/GGPLDS_fig6_9.pdf}
+\end{center}
+ 
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Neutral slope tapering: stability does not imply accuracy}
+
+\begin{itemize}
+
+\item[$\star$] Tapering allows us to run the model stably.
+
+ \item[$\star$] But accuracy is degraded when neutral slopes are steeper than the grid aspect ratio (Beckers et al 2000)
+ (akin to the representation of topography).
+
+\end{itemize}
+
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=.8\textwidth]{FIGS/neutral_direction.pdf}
+\caption{Zonal-vertical grid cell arrangement \& sample neutral directions.}
+\label{fig:neutral_direction}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Layer (2d convergence) vs. level (3d convergence)}
+
+\begin{itemize}
+
+\item[$\star$] Layer models compute isopycnal (or ideally neutral tangent plane) diffusion as a 2d layer-convergence 
+($h^{\gamma} = $ thickness)
+\begin{equation}
+     {\bm F}^{\mbox{\tiny layer}}= - A \, \nabla_{\gamma} C
+     \qquad 
+      {\cal R}^{\mbox{\tiny layer}} = 
+     -\frac{1}{h^{\gamma} }  
+     \left[ \nabla_{\gamma} \cdot (h^{\gamma} \,
+     {\bm F}^{\mbox{\tiny layer}} ) \right].
+\end{equation}
+
+\item[$\star$] Level models compute small slope neutral diffusion as a 3d level-convergence
+\begin{equation}
+   {\bm F}^{\mbox{\tiny level}} 
+  =  -A \, \left[ \nabla_{\gamma}  + \hat{\bm z} \, ({\bm S} \cdot \nabla_{\gamma} ) \right] C  
+   \qquad 
+   {\cal R}^{\mbox{\tiny level}} 
+    = -\nabla_{z} \cdot {\bm F}_{h}^{\mbox{\tiny level}}   
+    - \partial_{z} F_{z}^{\mbox{\tiny level}}
+\end{equation}
+
+\item[$\star$] Maths shows that the operators are identical
+\parencite{SMGbook,McDougall_etal_geometry}  
+\begin{equation}
+ {\cal R}^{\mbox{\tiny layer}}  = {\cal R}^{\mbox{\tiny level}}.
+\end{equation}
+
+\item[$\star$] Hence, in continuum, neutral diffusion formulated
+  layer-wise is the same as small slope neutral diffusion formulated
+  level-wise.
+
+\item[$\star$] But they are distinct numerically. Layer approach is
+  ensured to be downgradient, whereas level approach (rotated
+  diffusion) can suffer from extrema ala \textcite{Beckersetal1998}.
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{New method: vertically non-local slope/gradient estimate}
+
+\begin{itemize}
+
+\item[$\star$] \textcite{Groeskamp_slopes2019}: observational analysis
+  method focused on cabbeling and ventilation diagnostics (level 3d
+  convergence implementation).
+
+\item[$\star$] \textcite{Shao_etal_2020}: MOM6 ALE-layer neutral
+  diffusion (2d convergence to ensure no extrema).
+
+\item[$\star$] Slope tapering imposed by grid resolution: cannot
+  represent a neutral direction so steep that it leaves domain within
+  a cell.
+
+\item[$\star$] Hence, "max slope" is chosen by grid resolution not
+  modeler.
+
+
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=.5\textwidth]{FIGS/groeskamp.pdf}
+\label{fig:groeskamp}
+\end{center}
+
+\end{frame}
+
+
+
+\begin{frame}{Neutral skew diffusion from polarized tracer fluxes}
+
+\begin{itemize}
+
+\item[$\star$] Layer averaged tracer equation (\textcite{Smith1999},
+  Section 9.4.3 of \textcite{SMGbook})
+\begin{align}
+ (\partial_{t} + \widehat{\bm u} \cdot \nabla_{\gamma} ) \,  \widehat{C}
+ &= -\frac{1}{\overline{h}^{\gamma}} \, 
+   \nabla_{\gamma} \cdot (\overline{h}^{\gamma} 
+   \, \widehat{C'' \, {\bm u}''})
+  \\
+  \widehat{\Phi} = \frac{\overline{\Phi \, h}^{\gamma}}{\overline{h}^{\gamma}}
+  \qquad \Phi &= \widehat{\Phi} + \Phi'' 
+\qquad
+\widehat{\bm u} = \overline{\bm u}^{\gamma} + {\bm u}^{\mbox{\tiny bolus}}
+  \\
+  \widehat{C'' \, {\bm u}''} 
+  &= - \mathbb{M} \cdot \nabla_{\gamma} \widehat{C}
+\label{eq:thickness-tracer-evolution}
+\end{align}
+
+\item[$\star$] The $\mathbb{M}$ tensor arises from correlations
+  between tracer and velocity on the neutral tangent plane.  It has
+  both a symmetric and an anti-symmetric component.
+
+\item[$\star$] Polarized tracer fluxes \parencite{MiddletonLoder1989}
+  contribute to the anti-symmetric component of $\mathbb{M}$.
+
+\item[$\star$] We presently only parameterize the symmetric component
+  of $\mathbb{M}$ via neutral diffusion.
+
+\item[$\star$] What justifies ignoring unresolved polarized tracer
+  fluxes?
+  
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+\end{document}
